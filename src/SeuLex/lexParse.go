@@ -18,6 +18,7 @@ var Exp_Map map[string]string
 func ScanStart(lexFile string,outFile string)  {
 
 	Def_Map = make(map[string]string)
+	Exp_Map = make(map[string]string)
 
 	file, err := os.Open(lexFile)
 	LexFile = file
@@ -26,7 +27,7 @@ func ScanStart(lexFile string,outFile string)  {
 		return
 	}
 	file = nil
-	file, err = os.Open(outFile)
+	file, err = os.OpenFile(outFile,os.O_WRONLY | os.O_CREATE,0)
 	OutFile = file
 	if err != nil {
 		fmt.Println("打开Out文件失败",err)
@@ -41,13 +42,14 @@ func ScanStart(lexFile string,outFile string)  {
 func scanner()  {
 	var state = 0
 	var line = 0
+	var lineS string
 	var text, outPut string
 	var errIn, errOut error
 	var reader = bufio.NewReader(LexFile)
 	var writer = bufio.NewWriter(OutFile)
 	for true {
 		line++
-		lineS := strconv.Itoa(line)
+		lineS = strconv.Itoa(line)
 		text, errIn = reader.ReadString('\n')
 		if errIn == io.EOF {
 			fmt.Println("读取文件完成")
@@ -63,16 +65,19 @@ func scanner()  {
 					state = 1
 				} else if strings.HasPrefix(text,"%%") {
 					state = 2
-				}else {
-					arr := strings.Split(text," ")
+				}else if text == "\n" {
+					break
+				} else {
+					arr := strings.Split(text,"\t")
+					exTemp := strings.Split(arr[len(arr)-1],"\n")[0]
 					if Def_Map != nil{
-						Def_Map[arr[0]] = arr[len(arr)-1]
+						Def_Map[arr[0]] = exTemp
 					}
 				}
 				break
 			}
 			case 1:{
-				if strings.HasPrefix(text,"}%") {
+				if strings.HasPrefix(text,"%}") {
 					_, errOut = writer.WriteString("//}% end\n")
 					errF := writer.Flush()
 					if errF != nil {
@@ -97,6 +102,8 @@ func scanner()  {
 						fmt.Println(lineS + "flush失败")
 					}
 					state = 3
+				}else if text == "\n" {
+					break
 				}else {
 					outPut += text
 				}
@@ -106,15 +113,14 @@ func scanner()  {
 				_, errOut = writer.WriteString(text)
 				break
 			}
-
 			default:{
 			fmt.Println(lineS + "结构不完整")
 			break
 			}
 		}
-		if state != 3 {
-			fmt.Println(lineS + "结构不完整")
-		}
+	}
+	if state != 3 {
+		fmt.Println(lineS + "结构不完整")
 	}
 
 }
@@ -129,5 +135,6 @@ func getRegularAndFunc(outPut string)  {
 		temp := strings.Split(exp[i],"\t")
 		Exp_Map[temp[0]] = temp[len(temp)-1]
 	}
+
 }
 

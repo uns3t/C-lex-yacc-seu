@@ -1,6 +1,8 @@
 package main
 
-import "SeuLex"
+import (
+	"SeuLex"
+)
 
 func main(){
 	//读入lex源文件
