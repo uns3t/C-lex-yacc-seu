@@ -1,90 +1,57 @@
 package stack
 
 import (
-	"errors"
-	"fmt"
+	"sync"
 )
 
-type Stack struct {
-	Element []interface{} //Element
-}
+type (
+	Stack struct {
+		top    *node
+		length int
+		lock   *sync.RWMutex
+	}
+	node struct {
+		value interface{}
+		prev  *node
+	}
+)
 
+// Create a new stack
 func NewStack() *Stack {
-	return &Stack{}
+	return &Stack{nil, 0, &sync.RWMutex{}}
 }
 
-func (stack *Stack) Push(value ...interface{}) {
-	stack.Element = append(stack.Element, value...)
+// Return the number of items in the stack
+func (this *Stack) Len() int {
+	return this.length
 }
 
-//返回下一个元素
-func (stack *Stack) Top() (value interface{}) {
-	if stack.Size() > 0 {
-		return stack.Element[stack.Size()-1]
-	}
-	return nil //read empty stack
-}
-
-//转string类型示例 stack.Pop().(string)
-//返回下一个元素,并从Stack移除元素
-func (stack *Stack) Pop() (value interface{}) {
-	if stack.Size() > 0 {
-		return stack.Element[stack.Size()-1]
-		stack.Element = stack.Element[:stack.Size()-1]
-	}
-	return nil //read empty stack
-}
-
-//交换值
-func (stack *Stack) Swap(other *Stack) {
-	switch {
-	case stack.Size() == 0 && other.Size() == 0:
-		return
-	case other.Size() == 0:
-		other.Element = stack.Element[:stack.Size()]
-		stack.Element = nil
-	case stack.Size() == 0:
-		stack.Element = other.Element
-		other.Element = nil
-	default:
-		stack.Element, other.Element = other.Element, stack.Element
-	}
-	return
-}
-
-//修改指定索引的元素
-func (stack *Stack) Set(idx int, value interface{}) (err error) {
-	if idx >= 0 && stack.Size() > 0 && stack.Size() > idx {
-		stack.Element[idx] = value
+// View the top item on the stack
+func (this *Stack) Peek() interface{} {
+	if this.length == 0 {
 		return nil
 	}
-	return errors.New("Set失败!")
+	return this.top.value
 }
 
-//返回指定索引的元素
-func (stack *Stack) Get(idx int) (value interface{}) {
-	if idx >= 0 && stack.Size() > 0 && stack.Size() > idx {
-		return stack.Element[idx]
+// Pop the top item of the stack and return it
+func (this *Stack) Pop() interface{} {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+	if this.length == 0 {
+		return nil
 	}
-	return nil //read empty stack
+	n := this.top
+	this.top = n.prev
+	this.length--
+	return n.value
 }
 
-//Stack的size
-func (stack *Stack) Size() int {
-	return len(stack.Element)
-}
-
-//是否为空
-func (stack *Stack) Empty() bool {
-	if stack.Element == nil || stack.Size() == 0 {
-		return true
-	}
-	return false
-}
-
-//打印
-func (stack *Stack) Print() {
-	for i := len(stack.Element) - 1; i >= 0; i-- {
-		fmt.Println(i, "=>", stack.Element[i])
-	}
+// Push a value onto the top of the stack
+func (this *Stack) Push(value interface{}) {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+	n := &node{value, this.top}
+	this.top = n
+	this.length++
 }

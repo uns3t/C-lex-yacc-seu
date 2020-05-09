@@ -1,6 +1,10 @@
 package SeuLex
 
-import "C-lex-yacc-seu/src/stack"
+import (
+	"stack"
+	"strconv"
+)
+
 /*
 实现 正则转nfa
 1.把正则表达式转化为后缀表达式
@@ -9,34 +13,34 @@ import "C-lex-yacc-seu/src/stack"
 
 //实现 合并nfa
 
-
 //const { processRegexEscape } = require('./formalize')
 
 //中缀表达式转后缀表达式
-func postfix(exp []string) *stack.Stack {
-	//input = processRegexEscape(exp)
-	input := exp
+func Postfix(exp []string) *stack.Stack {
+	//exp = processRegexEscape(exp)
 	var stack1 = stack.NewStack()
 	var output = stack.NewStack()
 	var pointer = 0
-	for pointer < len(input) {
+	for pointer < len(exp) {
 		// 运算符和左括号
-		if input[pointer] == "*" || input[pointer] == "|" || input[pointer] == "(" || input[pointer] == "•" {
-			stack1.Push(input[pointer])
-		} else if input[pointer] == ")" && input[pointer-1] != "\\" {
+		if exp[pointer] == "*" || exp[pointer] == "|" || exp[pointer] == "(" || exp[pointer] == "•" {
+			stack1.Push(exp[pointer])
+		} else if exp[pointer] == ")" && exp[pointer-1] != "\\" {
 			// 右括号
-			var top = stack1.Pop().(string)
+			var top = stack1.Pop()
 			for top != "(" {
 				output.Push(top)
-				top = stack1.Pop().(string)
+				top = stack1.Pop()
 			}
 		} else {
-			output.Push(input[pointer])
+			output.Push(exp[pointer])
 		}
 		pointer++
 	}
-	for stack1.Size() > 0 {
-		output.Push(stack1.Pop().(string))
+
+	//no idea
+	for stack1.Len() > 0 {
+		output.Push(stack1.Pop())
 	}
 	return output
 	//返回类型待定
@@ -44,122 +48,120 @@ func postfix(exp []string) *stack.Stack {
 }
 
 //后缀表达式转nfa
-//stateBias int, endName, action不知道啥类型
-func thompson(postfixExp []string, stateBias int, endName string, action string) {
-	var automaStack = stack.NewStack()
-	var stateNo = stateBias
-	var pointer = 0
-	for pointer < len(postfixExp) {
-		if postfixExp[pointer] == "|" {
-			var top_1 = automaStack.Pop()
-			var top_2 = automaStack.Pop()
-			stateNo++
-			var startState = stateNo
-			stateNo++
-			var endState = stateNo
-			//var automa = {
-			//start: `S${startState}`,
-			//end: `S${endState}`
-			//}
-			//自动机的开始状态和终止状态
-			automa.stateList = ([automa.start, automa.end]).concat(top_1.stateList, top_2.stateList)
-automa[automa.start] ={'ø':[top_1.start, top_2.start]}
-automa[automa.end] = {'ø':[]}
-top_1.stateList.forEach(k = > {
-automa[k] = top_1[k]
-})
-top_2.stateList.forEach(k => {
-automa[k] = top_2[k]
-})
-automa[top_1.end]['ø'].push(automa.end)
-automa[top_2.end]['ø'].push(automa.end)
-automaStack.push(automa)
-pointer+=1
-continue
-}
-if (postfixExp[pointer]== = '*'){
-var top = automaStack.pop()
-var startState = stateNo++
-var endState = stateNo++
-var automa = {
-start: `S${startState}`,
-end: `S${endState}`
-}
-automa.stateList = ([automa.start, automa.end]).concat(top.stateList)
-automa[automa.end] = {'ø':[]}
-automa[automa.start] ={'ø':[top.start, automa.end]}
-top.stateList.forEach(k = > {
-automa[k] = top[k]
-})
-automa[top.end]['ø'].push(top.start, automa.end)
-automaStack.push(automa)
-pointer+=1
-continue
-}
-if (postfixExp[pointer]== = '•'){
-var top_2 = automaStack.pop()
-var top_1 = automaStack.pop()
-var startState = stateNo++
-var endState = stateNo++
-var automa = {
-start: `S${startState}`,
-end: `S${endState}`
-}
-automa.stateList = ([automa.start, automa.end]).concat(top_1.stateList, top_2.stateList)
-automa[automa.start] ={'ø':[top_1.start]}
-automa[automa.end] = {'ø':[]}
-top_1.stateList.forEach(k = > {
-automa[k] = top_1[k]
-})
-top_2.stateList.forEach(k => {
-automa[k] = top_2[k]
-})
-automa[top_1.end]['ø'].push(top_2.start)
-automa[top_2.end]['ø'].push(automa.end)
-automaStack.push(automa)
-pointer+=1
-continue
-}
-// 执行到此处，表明是普通字符
-var startState = stateNo++
-var endState = stateNo++
-var automa = {
-start: `S${startState}`,
-end: `S${endState}`,
-}
-automa.stateList = [automa.start, automa.end]
-automa[automa.start] = {'ø':[]}
-automa[automa.end] = {'ø':[]}
-automa[automa.start][postfixExp[pointer].slice(-1)] = automa.end // 把转译字符恢复
-automaStack.push(automa)
-pointer += 1
-}
-if (automaStack.length != = 1){
-throw Error('Thompson算法构造NFA出错')
-}
-var automa = automaStack[0]
-automa.stateList = automa.stateList.sort((a, b) = >{
-a = parseInt(a.slice(1))
-b = parseInt(b.slice(1))
-return a-b
-})
-var endState = {}
-endState[automa.end] = { name:endName, action }
-automa.end = [endState]
-automa.nextBias = stateNo
-var alphabet = {}
-automa.stateList.forEach( k => {
-var subAlphabet = Object.keys(automa[k])
-subAlphabet.forEach( l = > {
-if (l!= = 'ø'){
-alphabet[l] = true
-}
-})
-})
-alphabet = Object.keys(alphabet)
-automa.alphabet = alphabet
-return automa
-}
+//每条正则语句对应于一条NFA
+func Post2Nfa(post []string) *NState {
+	println("Post2Nfa loading...")
+	var funcStr string // 该NFA所对应的终止状态的处理函数, 该NFA所对应的结局
+	Split := 257
+	Match := 256
+	var FragStack = stack.NewStack()
+	var f, f1, f2 Fragment
+	if post == nil {
+		return nil
+	}
 
-//module.exports = {postfix, thompson}
-//console.log(thompson(postfix('\\a•b'), 0, 'test'))
+	for p := 0; p < len(post); p++ {
+		switch post[p] {
+		//连接符, 对于两个Frag片段, 如果有连接符存在, 则进行连接操作对于正则表达式来说, 需要选择一个不会被用到的字符
+		case "LINK":
+			f2 = FragStack.Pop().(Fragment)
+			f1 = FragStack.Pop().(Fragment)
+
+			if f1.end.c == Split {
+				f1.end.out1 = f2.start
+			} else {
+				f1.end.c = Split
+				f1.end.out1 = f2.start
+			}
+			FragStack.Push(Fragment{f1.start, f2.end})
+			break
+
+		case "?":
+			//可选的
+			f = FragStack.Pop().(Fragment)
+			end := NState{Match, nil, nil, ""}
+			start := NState{Split, f.start, &end, ""}
+			if f.end.c == Split {
+				f.end.out1 = &end
+			} else {
+				f.end.c = Split
+				f.end.out2 = &end
+			}
+			FragStack.Push(Fragment{&start, &end})
+			break
+
+		case "|":
+			f1 = FragStack.Pop().(Fragment)
+			f2 = FragStack.Pop().(Fragment)
+			start := NState{Split, f1.start, f2.start, ""}
+			end := NState{Match, nil, nil, ""}
+			f1.end.c = Split
+			f2.end.c = Split
+			f1.end.out2 = &end
+			f2.end.out2 = &end
+			FragStack.Push(Fragment{&start, &end})
+			break
+
+		case "*":
+			f = FragStack.Pop().(Fragment)
+			end := NState{Match, nil, nil, ""}
+			start := NState{Split, f.start, &end, ""}
+			f.end.c = Split
+			f.end.out2 = f.start
+			f.end.out1 = &end
+			FragStack.Push(Fragment{&start, &end})
+			break
+
+		case "+":
+			f = FragStack.Pop().(Fragment)
+			start := NState{Split, f.start, nil, ""}
+			end := NState{Match, nil, nil, ""}
+			f.end.c = Split
+			f.end.out2 = f.start
+			f.end.out1 = &end
+			FragStack.Push(Fragment{&start, &end})
+			break
+
+		case "\\":
+			p++
+			end := NState{Match, nil, nil, ""}
+			i, _ := strconv.Atoi(post[p])
+			start := NState{i, &end, nil, ""}
+			//char_set.insert(*p)
+			FragStack.Push(Fragment{&start, &end})
+			break
+
+		default:
+			end := NState{Match, nil, nil, ""}
+			i, _ := strconv.Atoi(post[p])
+			start := NState{i, &end, nil, ""}
+			//char_set.insert(*p)
+			FragStack.Push(Fragment{&start, &end})
+			break
+		}
+	}
+	f = FragStack.Pop().(Fragment)
+
+	// 如果栈中仍然存在其余元素, 则不匹配
+	// 这里还有点问题
+	if FragStack.Len() != 0 {
+		println("error occurred\n")
+		//this->showNFA(e.start);
+	}
+
+	if f.end.c == Match {
+		//e.end->out1 = end;
+		//printf ( "already matched\n" );
+		f.end.endFunc = funcStr
+	} else {
+		end := NState{Match, nil, nil, ""}
+		end.endFunc = funcStr
+		f.end.out1 = &end
+		f.end = &end
+	}
+
+	nfa_s := f.start
+	//nfa_e := f.end
+
+	return nfa_s
+}
