@@ -125,16 +125,48 @@ func scanner()  {
 
 }
 
-func getFunc(text string, line int)  {
-	
-}
-
 func getRegularAndFunc(outPut string)  {
 	exp := strings.Split(outPut,"\n")
 	for i := range exp {
 		temp := strings.Split(exp[i],"\t")
-		Exp_Map[temp[0]] = temp[len(temp)-1]
+		replacedExp := ReplacePredefinedElements(temp[0])
+		Exp_Map[replacedExp] = temp[len(temp)-1]
 	}
+}
 
+func EscapeQuotation(exp string){
+	input := strings.Split(exp,"")
+	start := 0
+	for start < len(input) {
+		end := start + 1
+		if input[start] == "\"" && input[start-1] != "\\" {
+			for end < len(input) && !(input[end] == "\"" && input[end-1] != "\\"){
+				end++
+			}
+		}
+		head := input[0:start]
+		tail := input[end+1:]
+		for i := start; i < end; i++ {
+			input[i] = "\\"+input[i]
+		}
+		fmt.Println(head)
+		fmt.Println(tail)
+
+	}
+}
+
+func ReplacePredefinedElements(exp string) string {
+	replaced := exp
+	flag := true
+	for flag {
+		flag = false
+		for k := range Def_Map {
+			if strings.Index(replaced,k) != -1{
+				flag = true
+				replaced = strings.ReplaceAll(replaced,k,Def_Map[k])
+			}
+		}
+	}
+	return replaced
 }
 
