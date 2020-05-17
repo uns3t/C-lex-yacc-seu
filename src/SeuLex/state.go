@@ -16,6 +16,17 @@ type Fragment struct {
 	end   *NState // 尾节点
 }
 
+type Dnode struct {
+	Nnodes []NState
+	Dout []Dstate
+}
+
+type Dstate struct {
+	c int
+	out Dnode
+}
+
+
 func NewNState() *NState {
 	return &NState{0, nil, nil, ""}
 }
