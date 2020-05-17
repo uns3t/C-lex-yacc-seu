@@ -1,19 +1,19 @@
 package SeuLex
 
 type NState struct {
-	c int
+	C int
 	//isStart    bool
 	//isEnd      bool
 	//transition map[string]*NState
-	out1    *NState
-	out2    *NState
-	endFunc string // 结束状态所对应的函数, 只有该点为Match时, 值可以视为有效
+	Out1    *NState
+	Out2    *NState
+	EndFunc string // 结束状态所对应的函数, 只有该点为Match时, 值可以视为有效
 }
 
 //NFA片段
 type Fragment struct {
-	start *NState // 起始节点
-	end   *NState // 尾节点
+	Start *NState // 起始节点
+	End   *NState // 尾节点
 }
 
 type Dnode struct {
@@ -22,8 +22,8 @@ type Dnode struct {
 }
 
 type Dstate struct {
-	c int
-	out Dnode
+	C int
+	Out Dnode
 }
 
 

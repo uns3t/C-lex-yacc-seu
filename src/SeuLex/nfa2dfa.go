@@ -24,25 +24,19 @@ func searchClosure(Nnode NState) []NState{
 		temp:=back[len(back)]
 		back=back[:len(back)]
 		ret=append(ret,temp)
-		if temp.c>255{
-			if temp.out1!=nil{
-				back=append(back,temp.out1)
+		if temp.C>255{
+			if temp.Out1!=nil{
+				back=append(back,temp.Out1)
 			}
-			if temp.out2!=nil{
-				back=append(back,temp.out2)
+			if temp.Out2!=nil{
+				back=append(back,temp.Out2)
 			}
 		}
 	}
 	return ret
 }
 
-func retDnodeOut(Narr []NState)  {
-	for i:=0;i<len(Narr);i++{
-		if Narr[i].c<=255{
-			backLook=append(backLook,Narr[i])
-		}
-	}
-}
+
 
 type Dtemp struct {
 	Nnode NState
@@ -66,10 +60,10 @@ func nfa2dfa(nfa NState) []Dnode{
 		if !flag{
 			tempClosure:=searchClosure(tempNode)
 			dArr= append(dArr, Dnode{tempClosure,[]Dstate{}})
-			Onedtemp:=Dtemp{tempNode,tempClosure}
-			dtemp=append(dtemp,Onedtemp)
+			Oedema :=Dtemp{tempNode,tempClosure}
+			dtemp=append(dtemp, Oedema)
 			for i:=0;i<len(tempClosure);i++{
-				if(tempClosure[i].c<=255){
+				if tempClosure[i].C<=255{
 					backLook=append(backLook,tempClosure[i])
 				}
 			}
@@ -77,11 +71,11 @@ func nfa2dfa(nfa NState) []Dnode{
 	}
 	for i:=0;i<len(dArr);i++{
 		for j:=0;j<len(dArr[i].Nnodes);j++{
-			if(dArr[i].Nnodes[j].c<=255){
+			if dArr[i].Nnodes[j].C<=255{
 				idx:=0
 				for true{
 					if dtemp[idx].Nnode==dArr[i].Nnodes[j]{
-						dArr[i].Dout=append(dArr[i].Dout,Dstate{c,dArr[idx]})
+						dArr[i].Dout=append(dArr[i].Dout,Dstate{dArr[i].Nnodes[j].C,dArr[idx]})
 						break
 					}
 					idx++
