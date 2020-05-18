@@ -15,3 +15,4 @@ void comment(){
 		prev=c;
 	}
 	printf("ERROR: unterminated comment!");
+}
