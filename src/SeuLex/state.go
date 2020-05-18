@@ -23,7 +23,7 @@ type Dnode struct {
 
 type Dstate struct {
 	C int
-	Out Dnode
+	Out *Dnode
 }
 
 
