@@ -18,6 +18,7 @@ type Fragment struct {
 
 type Dnode struct {
 	Nnodes []NState
+	isEnd bool
 	Dout []Dstate
 }
 

@@ -5,18 +5,30 @@ import (
 	"os"
 )
 
+var dfaString string
+
+
 
 func Dfa2c(dArr []Dnode)  {
-	lexFile,_:=os.Create("lex.c")
+	lexFile,err:=os.OpenFile("./output/test.c",os.O_APPEND|os.O_WRONLY, 0)
+	if err != nil {
+		fmt.Println("打开Out文件失败",err)
+		return
+	}
+	dfaString="\n\tswitch (c) {\n"
+	for i:=0;i<len(dArr);i++{
+		if dArr[i].isEnd{
+			dfaString=dfaString+"\n\tdefault:\n\t\tbreak;}"
+		}else {
+			for j:=0;j<len(dArr[i].Dout);j++{
+				dfaString=dfaString+"\t\tcase '"+string(dArr[i].Dout[j].C)+"':\n"+"\t\tbreak;\n"
+			}
+		}
+	}
 
 	fullOutput := `
-  
-    int cp = 0;
-    int state = 0;
     
     void dfa(char c);
-    
-    ${dfa.userDefineProgram}
 
     int main(int argc, const char * argv[]) {
 		fp = fopen(argv[1], "r");
@@ -34,13 +46,7 @@ func Dfa2c(dArr []Dnode)  {
         return 0;
     }
     
-    void dfa(char c){
-        switch(state){
-            ${coreOutput.join('\n')}
-            default:
-                throw 1;
-                break;
-        }
+    void dfa(char c){`+dfaString+`
     }
     `
 	lexFile.WriteString(fullOutput)

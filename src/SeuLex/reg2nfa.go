@@ -1,10 +1,5 @@
 package SeuLex
 
-import (
-	"stack"
-	"strconv"
-)
-
 /*
 实现 正则转nfa
 1.把正则表达式转化为后缀表达式

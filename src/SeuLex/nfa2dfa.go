@@ -61,8 +61,12 @@ func Nfa2dfa(nfa NState) []Dnode{
 		}
 		//如果没有求过闭包，就求闭包，然后保存
 		if !flag{
+			isEnd:=false
+			if tempNode.C==256{
+				isEnd=true
+			}
 			tempClosure:=searchClosure(tempNode)
-			dArr= append(dArr, Dnode{tempClosure,[]Dstate{}})
+			dArr= append(dArr, Dnode{tempClosure,isEnd,[]Dstate{}})
 			//临时变量，用来保存闭包
 			Oedema :=Dtemp{tempNode,tempClosure}
 			dtemp=append(dtemp, Oedema)
@@ -94,7 +98,6 @@ func Nfa2dfa(nfa NState) []Dnode{
 	for i:=0;i<len(dArr);i++{
 		fmt.Println("Dfa out C: ")
 		for j:=0;j<len(dArr[i].Dout);j++{
-
 			fmt.Println(dArr[i].Dout[j].C)
 		}
 	}
