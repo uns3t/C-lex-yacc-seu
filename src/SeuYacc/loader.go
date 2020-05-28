@@ -27,18 +27,19 @@ func LoadYaccFile(yaccPath string) YaccFile {
 		fmt.Println("打开Lex文件失败",err)
 	}
 	yaccSegment:=strings.Split(string(yaccData),"%%")
-	ret:=YaccFile{nil,nil,nil}
-	ret.DefineSegment=parseDefineSegment(yaccSegment[0])
-	ret.GrammarSegment=parseGrammarSegment(yaccSegment[1])
-	ret.ProgramSegment=yaccSegment[2]
+
+	temp1:=parseDefineSegment(yaccSegment[0])
+	temp2:=parseGrammarSegment(yaccSegment[1])
+	ret:=YaccFile{temp1,temp2,yaccSegment[2]}
+	fmt.Println(temp2)
 	return ret
 }
 
 func parseDefineSegment(str string)  defineSegment{
-	arr:=strings.Split("\r\n",str)
+	arr:=strings.Split(str,"\r\n")
 	ret:=defineSegment{[]string{},""}
 	for _,v:=range arr{
-		if string(v[0])=="%"{
+		if len(v)>0{
 			temp:=strings.Split(v," ")
 			if temp[0]=="%token"{
 				for i:=1;i<len(temp);i++{
@@ -53,23 +54,29 @@ func parseDefineSegment(str string)  defineSegment{
 }
 
 func parseGrammarSegment(str string)  []grammarSegment{
-	arr:=strings.Split("\r\n;",str)
+	str=strings.TrimSpace(str)
+
+	arr:=strings.Split(str,"\t;")
 	newArr:=make([]string, len(arr))
-	ret:=make([]grammarSegment, len(arr))
+	ret:=make([]grammarSegment, 0)
 	for k,_:=range arr{
 		arr[k]=strings.Trim(arr[k]," ")
+		arr[k]=strings.Trim(arr[k],"\n")
 		if len(arr[k])>0{
 			newArr=append(newArr,arr[k])
 		}
 	}
-	for _,v:=range newArr{
-		temp:=strings.Split(v,":")
-		tempRight:=strings.Split(strings.Trim(temp[1]," "),"|")
-		right:=make([][]string,len(tempRight))
-		for _,v:=range tempRight{
-			right=append(right,strings.Split(strings.Trim(v," ")," "))
+	for i:=0;i<len(newArr);i++{
+		if len(newArr[i])>0{
+			temp:=strings.Split(newArr[i],":")
+			tempRight:=strings.Split(strings.Trim(temp[1]," "),"|")
+			right:=make([][]string,0)
+			for _,v:=range tempRight{
+				right=append(right,strings.Split(strings.TrimSpace(v)," "))
+			}
+			left:=strings.TrimSpace(temp[0])
+			ret=append(ret,grammarSegment{left,right})
 		}
-		ret=append(ret,grammarSegment{strings.Trim(temp[0]," "),right})
 	}
 	return ret
 }
