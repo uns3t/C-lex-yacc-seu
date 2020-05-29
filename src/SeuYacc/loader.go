@@ -46,7 +46,7 @@ func parseDefineSegment(str string)  defineSegment{
 					ret.Token=append(ret.Token,temp[i])
 				}
 			}else if temp[0]=="%start"{
-				ret.Start=temp[1]
+				ret.Start=strings.TrimSpace(temp[1])
 			}
 		}
 	}
