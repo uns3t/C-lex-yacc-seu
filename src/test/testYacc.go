@@ -1,7 +1,11 @@
 package main
 
-import ("SeuYacc")
+import (
+	"SeuYacc"
+)
 
 func main()  {
-	SeuYacc.LoadYaccFile("./input/c99.y")
+	yaccFile:=SeuYacc.LoadYaccFile("./input/c99.y")
+	SeuYacc.YaccToGrammar(yaccFile)
+
 }

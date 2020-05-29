@@ -29,11 +29,12 @@ func arrayInclude(arr []string,val string) bool {
 var gramme Grammar
 
 
-func yaccToGrammar(yaccFile YaccFile) Grammar{
+func YaccToGrammar(yaccFile YaccFile) Grammar{
 	gramme.start=yaccFile.DefineSegment.Start
 	gramme.vnList=[]string{"S"}
 	gramme.vtList=yaccFile.DefineSegment.Token
 	gramme.vtList=append(gramme.vtList,"$")
+	gramme.p=make(map[string][]pNode)  //map的使用必须先初始化
 	gramme.p["S"]=[]pNode{{"0",[]string{gramme.start}}}
 	pCounter:=1
 	for _,v:=range yaccFile.GrammarSegment{
@@ -63,6 +64,7 @@ func yaccToGrammar(yaccFile YaccFile) Grammar{
 		}
 	}
 
+	//fmt.Println(gramme.start)
 	return gramme
 
 }

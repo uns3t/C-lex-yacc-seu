@@ -31,7 +31,7 @@ func LoadYaccFile(yaccPath string) YaccFile {
 	temp1:=parseDefineSegment(yaccSegment[0])
 	temp2:=parseGrammarSegment(yaccSegment[1])
 	ret:=YaccFile{temp1,temp2,yaccSegment[2]}
-	fmt.Println(temp2)
+
 	return ret
 }
 
@@ -55,21 +55,19 @@ func parseDefineSegment(str string)  defineSegment{
 
 func parseGrammarSegment(str string)  []grammarSegment{
 	str=strings.TrimSpace(str)
-
 	arr:=strings.Split(str,"\t;")
 	newArr:=make([]string, 0)
 	ret:=make([]grammarSegment, 0)
 	for k,_:=range arr{
-		arr[k]=strings.Trim(arr[k]," ")
-		arr[k]=strings.Trim(arr[k],"\n")
+		arr[k]=strings.TrimSpace(arr[k])
 		if len(arr[k])>0{
 			newArr=append(newArr,arr[k])
 		}
 	}
 	for i:=0;i<len(newArr);i++{
 		if len(newArr[i])>0{
-			temp:=strings.Split(newArr[i],":")
-			tempRight:=strings.Split(strings.Trim(temp[1]," "),"|")
+			temp:=strings.Split(newArr[i],"\t:")
+			tempRight:=strings.Split(strings.TrimSpace(temp[1]),"\t|")
 			right:=make([][]string,0)
 			for _,v:=range tempRight{
 				right=append(right,strings.Split(strings.TrimSpace(v)," "))
