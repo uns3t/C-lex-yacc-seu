@@ -57,7 +57,7 @@ func parseGrammarSegment(str string)  []grammarSegment{
 	str=strings.TrimSpace(str)
 
 	arr:=strings.Split(str,"\t;")
-	newArr:=make([]string, len(arr))
+	newArr:=make([]string, 0)
 	ret:=make([]grammarSegment, 0)
 	for k,_:=range arr{
 		arr[k]=strings.Trim(arr[k]," ")
