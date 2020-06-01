@@ -2,27 +2,27 @@ package SeuYacc
 
 //记录了LR1状态转换图中的每一个状态
 type lrState struct {
-	name string
-	items map[string]*item
+	name      string
+	items     map[string]*item
 	signature string
-	edge map[string]string
+	edge      map[string]string
 }
 
 type item struct {
 	predictor []string
-	position int
+	position  int
 	rightPart []string
 }
 
 func NewLrState(n string) *lrState {
-	return &lrState{name: n,items: make(map[string]*item),edge: make(map[string]string)}
+	return &lrState{name: n, items: make(map[string]*item), edge: make(map[string]string)}
 }
-func(this *lrState) PutItems(name string,pre []string, pos int, right []string)  {
-	this.items[name] = NewItemp(pre,pos,right)
+func (this *lrState) PutItems(name string, pre []string, pos int, right []string) {
+	this.items[name] = NewItemp(pre, pos, right)
 }
 
 func NewItemp(pre []string, pos int, rightP []string) *item {
-	return &item{predictor: pre,position: pos,rightPart: rightP}
+	return &item{predictor: pre, position: pos, rightPart: rightP}
 }
 
 type dfaItemQueue struct {
@@ -32,10 +32,10 @@ type dfaItemQueue struct {
 func NewDfaQueue() *dfaItemQueue {
 	return &dfaItemQueue{}
 }
-func(this *dfaItemQueue) Push(state *lrState)  {
+func (this *dfaItemQueue) Push(state *lrState) {
 	this.lrStatequeue = append(this.lrStatequeue, state)
 }
-func(this *dfaItemQueue) Shift() *lrState {
+func (this *dfaItemQueue) Shift() *lrState {
 	if len(this.lrStatequeue) == 0 {
 		panic("dfa队列错误，为空")
 	}

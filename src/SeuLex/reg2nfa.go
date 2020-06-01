@@ -56,6 +56,7 @@ func Postfix(exp []string) *stack.Stack {
 
 //后缀表达式转nfa
 //每条正则语句对应于一条NFA
+//形参得添加一个action(endFunction)
 func Post2Nfa(post []string) (*NState, map[int]string) {
 	LINK := 01
 	Split := 257
