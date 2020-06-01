@@ -2,10 +2,13 @@ package main
 
 import (
 	"SeuYacc"
+	"strings"
 )
 
 func main()  {
 	yaccFile:=SeuYacc.LoadYaccFile("./input/c99.y")
-	SeuYacc.YaccToGrammar(yaccFile)
-
+	grammar :=SeuYacc.YaccToGrammar(yaccFile)
+	dfaItem := SeuYacc.NewLrState("I0")
+	dfaItem.PutItems("0-0",strings.Split("$",""),0,strings.Split(grammar.GrammarStart(),""))
+	SeuYacc.GenerateLR1DFA(dfaItem,&grammar)
 }

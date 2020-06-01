@@ -11,10 +11,14 @@ type pNode struct {
 }
 
 type Grammar struct {
-	start string
+	start  string
 	vtList []string
 	vnList []string
-	p map[string][]pNode
+	p      map[string][]pNode
+}
+
+func(this *Grammar) GrammarStart() string {
+	return this.start
 }
 
 func arrayInclude(arr []string,val string) bool {
@@ -30,7 +34,7 @@ var gramme Grammar
 
 
 func YaccToGrammar(yaccFile YaccFile) Grammar{
-	gramme.start=yaccFile.DefineSegment.Start
+	gramme.start =yaccFile.DefineSegment.Start
 	gramme.vnList=[]string{"S"}
 	gramme.vtList=yaccFile.DefineSegment.Token
 	gramme.vtList=append(gramme.vtList,"$")

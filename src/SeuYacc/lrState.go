@@ -17,6 +17,9 @@ type item struct {
 func NewLrState(n string) *lrState {
 	return &lrState{name: n,items: make(map[string]*item),edge: make(map[string]string)}
 }
+func(this *lrState) PutItems(name string,pre []string, pos int, right []string)  {
+	this.items[name] = NewItemp(pre,pos,right)
+}
 
 func NewItemp(pre []string, pos int, rightP []string) *item {
 	return &item{predictor: pre,position: pos,rightPart: rightP}

@@ -36,7 +36,7 @@ func LoadYaccFile(yaccPath string) YaccFile {
 }
 
 func parseDefineSegment(str string)  defineSegment{
-	arr:=strings.Split(str,"\r\n")
+	arr:=strings.Split(str,"\n")//windows \r\n   mac \n
 	ret:=defineSegment{[]string{},""}
 	for _,v:=range arr{
 		if len(v)>0{

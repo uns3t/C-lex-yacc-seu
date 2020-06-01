@@ -2,6 +2,7 @@ package SeuYacc
 
 import (
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -26,14 +27,14 @@ func nextStep(dfaItem *lrState, edge string) *lrState {
 		if dfaItem.items[n].rightPart[dfaItem.items[n].position] == edge {
 			temp := NewItemp(dfaItem.items[n].predictor,dfaItem.items[n].position,
 				dfaItem.items[n].rightPart)
-			flag := pCode + "-" + string(dfaItem.items[n].position+1)
+			flag := pCode + "-" + strconv.Itoa(dfaItem.items[n].position+1)
 			newDfaItem.items[flag] = temp
 		}
 	}
 	return newDfaItem
 }
 
-func generateLR1DFA(I0 *lrState,grammar *Grammar) map[string]*lrState {
+func GenerateLR1DFA(I0 *lrState,grammar *Grammar) map[string]*lrState {
 	lrDFA := make(map[string]*lrState)
 	lr1DfaSigniture := make(map[string]string)
 	dfaItemQ := NewDfaQueue()
@@ -48,8 +49,9 @@ func generateLR1DFA(I0 *lrState,grammar *Grammar) map[string]*lrState {
 		for i := range outEdges {
 			nextItem := nextStep(currentItem,outEdges[i])
 			nextItem = expandDFAItem(nextItem,grammar)
-			if lr1DfaSigniture[nextItem.signature] != "" {
-				nextItem.name = "I" + string(nameCounter+1)
+			if lr1DfaSigniture[nextItem.signature] == "" {
+				nextItem.name = "I" + strconv.Itoa(nameCounter)
+				nameCounter++
 				lr1DfaSigniture[nextItem.signature] = nextItem.name
 				dfaItemQ.Push(nextItem)
 				currentItem.edge[outEdges[i]] = nextItem.name
@@ -76,14 +78,17 @@ func expandDFAItem(dfaItem *lrState, grammar *Grammar) *lrState {
 				// 点的后面是非终结符
 				newPredictor := make(map[string]bool)
 				var newKey []string
+				newKey = newKey[:0]
 				// 先计算新的预测符
 				for vt := range predictor {
 					betaAlpha := append(rightPart[position+1:],predictor[vt])
 					first := first(betaAlpha,*grammar)
 					for vtt := range first {
 						newPredictor[first[vtt]] = true
-						newKey = append(newKey, first[vtt])
 					}
+				}
+				for s := range newPredictor {
+					newKey = append(newKey, s)
 				}
 				sort.Strings(newKey)
 
