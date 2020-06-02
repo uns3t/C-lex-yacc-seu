@@ -91,7 +91,7 @@ func processRegexEscape(exp string) []string {
 }
 
 /*
-	解析.
+	解析.(a|b|c|...)
  */
 func transformAllExp(exp string) string {
 	input := processRegexEscape(exp)
@@ -116,7 +116,7 @@ func transformAllExp(exp string) string {
 }
 
 /*
-	解析[^]
+	解析[^] (a|b|c...)
  */
 func transformNegRangeExp(exp string) string {
 	input := processRegexEscape(exp)
@@ -151,7 +151,7 @@ func transformNegRangeExp(exp string) string {
 }
 
 /*
-	解析[?-?]
+	解析[?-?] [a-z] (a|b
  */
 func transformRangeExpAdvanced(exp string) string {
 	input := processRegexEscape(exp)

@@ -2,8 +2,8 @@ package SeuYacc
 
 //记录了LR1状态转换图中的每一个状态
 type lrState struct {
-	name      string
-	items     map[string]*item
+	name      string//I0
+	items     map[string]*item//key = 0-0
 	signature string
 	edge      map[string]string
 }

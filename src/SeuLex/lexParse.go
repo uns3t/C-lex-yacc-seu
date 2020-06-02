@@ -15,6 +15,7 @@ var OutFile *os.File
 var Def_Map  map[string]string
 var Exp_Map map[string]string
 
+//输入lex文件
 func ScanStart(lexFile string,outFile string)  {
 
 	Def_Map = make(map[string]string)

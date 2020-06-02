@@ -9,7 +9,7 @@ import (
 //lr1语法分析
 
 //语法解析, 状态构建, 状态去重, 状态转移, Action表与Goto表的构建
-//
+//s->s·a /s->s·b a,b s->sa·
 func getOutEdge(dfaItem *lrState) []string {
 	var outEdge []string
 	for n := range dfaItem.items {
@@ -63,7 +63,7 @@ func GenerateLR1DFA(I0 *lrState,grammar *Grammar) map[string]*lrState {
 	}
 	return lrDFA
 }
-
+//S->S' 扩展成s->s',s'->....,...,
 func expandDFAItem(dfaItem *lrState, grammar *Grammar) *lrState {
 	expandFlag := true
 	for expandFlag {
@@ -71,10 +71,10 @@ func expandDFAItem(dfaItem *lrState, grammar *Grammar) *lrState {
 		for itemName := range dfaItem.items {
 			item := dfaItem.items[itemName]
 			position := item.position
-			pCode := strings.Split(itemName,"-")[0]
+			pCode := strings.Split(itemName,"-")[0]//11-0
 			predictor := item.predictor
 			rightPart := getRightPart(*grammar,pCode)
-			if isVn(*grammar,rightPart[position]) {
+			if isVn(grammar,rightPart[position]) {
 				// 点的后面是非终结符
 				newPredictor := make(map[string]bool)
 				var newKey []string
@@ -83,7 +83,7 @@ func expandDFAItem(dfaItem *lrState, grammar *Grammar) *lrState {
 				for vt := range predictor {
 					betaAlpha := append(rightPart[position+1:],predictor[vt])
 					first := first(betaAlpha,*grammar)
-					for vtt := range first {
+					for vtt := range first {//a,a,b,b
 						newPredictor[first[vtt]] = true
 					}
 				}
