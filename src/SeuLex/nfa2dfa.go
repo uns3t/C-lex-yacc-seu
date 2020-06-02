@@ -71,7 +71,6 @@ func Nfa2dfa(nfa NState) []Dnode{
 			Oedema :=Dtemp{tempNode,tempClosure}
 			dtemp=append(dtemp, Oedema)
 
-
 			for i:=0;i<len(tempClosure);i++{
 				if tempClosure[i].C<=255{
 					backLook=append(backLook,*tempClosure[i].Out1)
@@ -79,6 +78,7 @@ func Nfa2dfa(nfa NState) []Dnode{
 			}
 		}
 	}
+
 	//构建dfa
 	for i:=0;i<len(dArr);i++{
 		for j:=0;j<len(dArr[i].Nnodes);j++{
