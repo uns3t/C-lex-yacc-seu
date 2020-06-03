@@ -2,6 +2,7 @@ package SeuLex
 
 import (
 	"C-lex-yacc-seu/src/stack"
+	"fmt"
 	"strconv"
 )
 
@@ -13,7 +14,7 @@ import (
 
 //实现 合并两个nfa
 func merge(n1, n2 NState, cs1, cs2 map[int]string) (*NState, map[int]string) {
-	n := NState{257, &n1, &n2, ""}
+	n := NState{888888, 257, &n1, &n2, ""}
 	for k, v := range cs2 {
 		cs1[k] = v
 	}
@@ -69,18 +70,19 @@ func Postfix(exp []string) []string {
 
 //后缀表达式转nfa
 //每条正则语句对应于一条NFA
-//形参得添加一个action(endFunction)
-func Post2Nfa(post []string) (*NState, map[int]string) {
+//funcStr string 该NFA所对应的终止状态的处理函数, 该NFA所对应的结局
+func Post2Nfa(post []string, funcStr string) (*NState, map[int]*NState) {
+	//连接符
 	LINK := 01
 	Split := 257
 	Match := 256
 
-	println("Post2Nfa loading...")
-	var funcStr string // 该NFA所对应的终止状态的处理函数, 该NFA所对应的结局
+	fmt.Println("Post2Nfa loading...")
+
+	stateId := 0
 	var FragStack = stack.NewStack()
 	var f, f1, f2 Fragment
-
-	var charSet map[int]string
+	id2state := make(map[int]*NState)
 
 	if post == nil {
 		return nil, nil
@@ -89,81 +91,102 @@ func Post2Nfa(post []string) (*NState, map[int]string) {
 	for p := 0; p < len(post); p++ {
 		switch post[p] {
 		//连接符, 对于两个Frag片段, 如果有连接符存在, 则进行连接操作对于正则表达式来说, 需要选择一个不会被用到的字符
-		case strconv.Itoa(LINK):
+		case string(LINK):
 			f2 = FragStack.Pop().(Fragment)
 			f1 = FragStack.Pop().(Fragment)
 
-			if f1.End.C == Split {
-				//end默认为match;所以这个表示第二次连接(不可能出现)
-				f1.End.Out2 = f2.Start
-			} else {
-				f1.End.C = Split
-				f1.End.Out1 = f2.Start
-			}
+			f1.End.C = Split
+			f1.End.Out1 = f2.Start
+
 			FragStack.Push(Fragment{f1.Start, f2.End})
 			break
 
 		case "?":
 			//可选的
 			f = FragStack.Pop().(Fragment)
-			End := NState{Match, nil, nil, ""}
-			Start := NState{Split, f.Start, &End, ""}
-			if f.End.C == Split {
-				f.End.Out2 = &End
-			} else {
-				f.End.C = Split
-				f.End.Out1 = &End
-			}
+			End := NState{stateId, Match, nil, nil, ""}
+			id2state[stateId] = &End
+			stateId++
+			Start := NState{stateId, Split, f.Start, &End, ""}
+			id2state[stateId] = &Start
+			stateId++
+
+			f.End.C = Split
+			f.End.Out1 = &End
+
 			FragStack.Push(Fragment{&Start, &End})
 			break
 
 		case "|":
 			f1 = FragStack.Pop().(Fragment)
 			f2 = FragStack.Pop().(Fragment)
-			Start := NState{Split, f1.Start, f2.Start, ""}
-			End := NState{Match, nil, nil, ""}
+
+			Start := NState{stateId, Split, f1.Start, f2.Start, ""}
+			id2state[stateId] = &Start
+			stateId++
+			End := NState{stateId, Match, nil, nil, ""}
+			id2state[stateId] = &End
+			stateId++
+
 			f1.End.C = Split
 			f2.End.C = Split
 			f1.End.Out1 = &End
 			f2.End.Out1 = &End
+
 			FragStack.Push(Fragment{&Start, &End})
 			break
 
 		case "*":
 			f = FragStack.Pop().(Fragment)
-			End := NState{Match, nil, nil, ""}
-			Start := NState{Split, f.Start, &End, ""}
+			End := NState{stateId, Match, nil, nil, ""}
+			id2state[stateId] = &End
+			stateId++
+			Start := NState{stateId, Split, f.Start, &End, ""}
+			id2state[stateId] = &Start
+			stateId++
+
 			f.End.C = Split
 			f.End.Out1 = f.Start
 			f.End.Out2 = &End
+
 			FragStack.Push(Fragment{&Start, &End})
 			break
 
 		case "+":
 			f = FragStack.Pop().(Fragment)
-			Start := NState{Split, f.Start, nil, ""}
-			End := NState{Match, nil, nil, ""}
+			Start := NState{stateId, Split, f.Start, nil, ""}
+			id2state[stateId] = &Start
+			stateId++
+			End := NState{stateId, Match, nil, nil, ""}
+			id2state[stateId] = &End
+			stateId++
+
 			f.End.C = Split
 			f.End.Out1 = f.Start
 			f.End.Out2 = &End
+
 			FragStack.Push(Fragment{&Start, &End})
 			break
 
 		case "\\":
-			//转义字符
+			//转义字符	这边的处理有点问题
 			p++
-			End := NState{Match, nil, nil, ""}
-			i, _ := strconv.Atoi(post[p])
-			Start := NState{i, &End, nil, ""}
-			charSet[p] = strconv.Itoa(p)
+			End := NState{stateId, Match, nil, nil, ""}
+			id2state[stateId] = &End
+			stateId++
+			Start := NState{stateId, int(post[p][0]), &End, nil, ""}
+			id2state[stateId] = &Start
+			stateId++
 			FragStack.Push(Fragment{&Start, &End})
 			break
 
 		default:
-			End := NState{Match, nil, nil, ""}
-			i, _ := strconv.Atoi(post[p])
-			Start := NState{i, &End, nil, ""}
-			charSet[i] = post[p]
+			End := NState{stateId, Match, nil, nil, ""}
+			id2state[stateId] = &End
+			stateId++
+			Start := NState{stateId, int(post[p][0]), &End, nil, ""}
+			id2state[stateId] = &Start
+			stateId++
 			FragStack.Push(Fragment{&Start, &End})
 			break
 		}
@@ -180,13 +203,32 @@ func Post2Nfa(post []string) (*NState, map[int]string) {
 	if f.End.C == Match {
 		f.End.EndFunc = funcStr
 	} else {
-		End := NState{Match, nil, nil, funcStr}
+		End := NState{stateId, Match, nil, nil, funcStr}
+		id2state[stateId] = &End
+		stateId++
+		f.End.C = Split
 		f.End.Out1 = &End
 		f.End = &End
 	}
+	fmt.Println("起始状态stateId" + strconv.Itoa(f.Start.stateId))
+	return f.Start, id2state
 
-	nfaS := f.Start
-	//nfa_e := f.End
+}
 
-	return nfaS, charSet
+func PrintNfa(id2state map[int]*NState) {
+	for stateId, state := range id2state {
+		fmt.Print("stateId:" + strconv.Itoa(stateId) + ";  ")
+		fmt.Print("C:" + strconv.Itoa(state.C) + ";  ")
+		if state.Out1 != nil {
+			fmt.Print("Out1:" + strconv.Itoa(state.Out1.stateId) + ";  ")
+		}
+		if state.Out2 != nil {
+			fmt.Print("Out2:" + strconv.Itoa(state.Out2.stateId) + ";  ")
+		}
+		if state.EndFunc != "" {
+			fmt.Println("EndFunc:" + state.EndFunc + ";  ")
+		} else {
+			fmt.Println("null EndFunc;  ")
+		}
+	}
 }

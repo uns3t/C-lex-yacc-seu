@@ -4,18 +4,17 @@ import (
 	"SeuLex"
 	"fmt"
 	"strings"
-	"time"
 )
 
 func TestDfa2nfa() {
-	Nnode1 := SeuLex.NState{257, nil, nil, ""}
-	Nnode2 := SeuLex.NState{97, nil, nil, ""}
-	Nnode3 := SeuLex.NState{98, nil, nil, ""}
-	Nnode4 := SeuLex.NState{256, nil, nil, ""}
-	Nnode1.Out1 = &Nnode2
-	Nnode1.Out2 = &Nnode3
-	Nnode2.Out1 = &Nnode4
-	Nnode3.Out1 = &Nnode4
+	//Nnode1 := SeuLex.NState{257, nil, nil, ""}
+	//Nnode2 := SeuLex.NState{97, nil, nil, ""}
+	//Nnode3 := SeuLex.NState{98, nil, nil, ""}
+	//Nnode4 := SeuLex.NState{256, nil, nil, ""}
+	//Nnode1.Out1 = &Nnode2
+	//Nnode1.Out2 = &Nnode3
+	//Nnode2.Out1 = &Nnode4
+	//Nnode3.Out1 = &Nnode4
 	//dArr:=SeuLex.Nfa2dfa(Nnode1)
 	//SeuLex.Dfa2c(dArr)
 }
@@ -38,6 +37,14 @@ func main() {
 	fmt.Println(postStr)
 	fmt.Println("正则表达式中缀转后缀完成\n ")
 
+	fmt.Println("正则表达式转nfa:")
+	startState, id2state := SeuLex.Post2Nfa(postStr, "Hello")
+	SeuLex.PrintNfa(id2state)
+	fmt.Println("正则表达式转nfa完成\n ")
+
+	fmt.Println("nfa转dfa:")
+	//dNodes:=SeuLex.Nfa2dfa(startState)
+	fmt.Println("nfa转dfa\n ")
 	//TestDfa2nfa()
-	time.Sleep(1000)
+	//time.Sleep(1000)
 }
