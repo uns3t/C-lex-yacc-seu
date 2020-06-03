@@ -21,9 +21,7 @@ func merge(n1, n2 NState, cs1, cs2 map[int]string) (*NState, map[int]string) {
 }
 
 //中缀表达式转后缀表达式
-func Postfix(exp []string) *stack.Stack {
-	//exp = processRegexEscape(exp)
-	//exp为正则表达式转义处理后的结果
+func Postfix(exp []string) []string {
 
 	var stack1 = stack.NewStack()
 	var Output = stack.NewStack()
@@ -45,13 +43,28 @@ func Postfix(exp []string) *stack.Stack {
 		pointer++
 	}
 
-	//no idea
 	for stack1.Len() > 0 {
 		Output.Push(stack1.Pop())
 	}
-	return Output
-	//返回类型待定
-	//没有释放空间!!!
+
+	//stack 转 []string
+	var OutputStr []string
+	var flag = true
+	for flag {
+		outputTop := Output.Pop()
+		switch outputTop.(type) {
+		case string:
+			OutputStr = append(OutputStr, outputTop.(string))
+			break
+		}
+		if Output.Len() == 0 {
+			flag = false
+		}
+	}
+	for i, j := 0, len(OutputStr)-1; i < j; i, j = i+1, j-1 {
+		OutputStr[i], OutputStr[j] = OutputStr[j], OutputStr[i]
+	}
+	return OutputStr
 }
 
 //后缀表达式转nfa

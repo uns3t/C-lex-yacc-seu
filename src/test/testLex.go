@@ -21,24 +21,22 @@ func TestDfa2nfa() {
 }
 
 func main() {
-	fmt.Println("没有规范化的正则表达式:\n" + "(L)?\\\"(((\\\\\\\\.)|[^\\\\\\\\\\\"\\\\n])*)\\\"")
+	//"(L)?\\\"(((\\\\\\\\.)|[^\\\\\\\\\\\"\\\\n])*)\\\""
+	regularExpression := "(a|b|c)?"
+	fmt.Println("没有规范化的正则表达式:\n" + regularExpression)
 
 	//读入lex源文件
 	SeuLex.ScanStart("./input/lextest.l", "./output/test.c")
 	SeuLex.ReplacePredefinedElements("(L)?\"(((\\\\.)|[^\\\\\"\\n])*)\"")
 	//对源文件进行分割
-	str := SeuLex.Formalize("(L)?\\\"(((\\\\\\\\.)|[^\\\\\\\\\\\"\\\\n])*)\\\"")
+	str := SeuLex.Formalize(regularExpression)
 	fmt.Println("规范化后的正则表达式:\n" + str)
-	fmt.Println("正则表达式规范化完成")
-	//fmt.Printf("%q",strings.Split(str,""))
-	stack1 := SeuLex.Postfix(strings.Split(str, ""))
-	var i = stack1.Len()
-	var n = 0
-	for n < i {
-		s := stack1.Pop()
-		fmt.Printf("%q", s)
-		n++
-	}
+	fmt.Println("正则表达式规范化完成\n ")
+
+	fmt.Println("中缀转后缀后的正则表达式:")
+	postStr := SeuLex.Postfix(strings.Split(str, ""))
+	fmt.Println(postStr)
+	fmt.Println("正则表达式中缀转后缀完成\n ")
 
 	//TestDfa2nfa()
 	time.Sleep(1000)
