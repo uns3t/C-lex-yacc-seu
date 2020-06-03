@@ -36,6 +36,12 @@ type DState struct {
 	Out *DNode
 }
 
+type DFAstate struct {
+	isEnd bool
+	id	int
+	value []*DState
+}
+
 func NewNState() *NState {
 	return &NState{0, 0, nil, nil, ""}
 }

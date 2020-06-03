@@ -1,7 +1,5 @@
 package SeuLex
 
-import "fmt"
-
 //Split := 257
 //Match := 256
 //type DNode struct {
@@ -40,7 +38,7 @@ type Dtemp struct {
 	NClosure []NState
 }
 
-func Nfa2dfa(nfa *NState) []DNode {
+func Nfa2dfa(nfa *NState) []*DFAstate {
 	dtemp := []Dtemp{}                //保存是否求过闭包
 	backLook = append(backLook, *nfa) //回溯还未处理（判断是否求过闭包）的新状态
 	dArr := []DNode{}                 //最后返回的DFA
@@ -90,11 +88,14 @@ func Nfa2dfa(nfa *NState) []DNode {
 		}
 	}
 
+	retArray:=make([]*DFAstate,0)
 	for i := 0; i < len(dArr); i++ {
-		fmt.Println("Dfa out C: ")
-		for j := 0; j < len(dArr[i].DOut); j++ {
-			fmt.Println(dArr[i].DOut[j].C)
+		value:=make([]*DState,0)
+		for j:=range dArr[i].DOut{
+			value=append(value,&dArr[i].DOut[j])
 		}
+		temp:=DFAstate{dArr[i].isEnd,i,value}
+		retArray=append(retArray,&temp)
 	}
-	return dArr
+	return retArray
 }
