@@ -4,14 +4,14 @@ import "fmt"
 
 //Split := 257
 //Match := 256
-//type Dnode struct {
-//	Nnodes []NState
-//	Dout []Dstate
+//type DNode struct {
+//	NStates []NState
+//	DOut []DState
 //}
 //
-//type Dstate struct {
+//type DState struct {
 //	c int
-//	out *Dnode
+//	out *DNode
 //}
 
 var backLook []NState
@@ -40,10 +40,10 @@ type Dtemp struct {
 	NClosure []NState
 }
 
-func Nfa2dfa(nfa *NState) []Dnode {
-	dtemp := []Dtemp{}               //保存是否求过闭包
-	backLook = append(backLook, nfa) //回溯还未处理（判断是否求过闭包）的新状态
-	dArr := []Dnode{}                //最后返回的DFA
+func Nfa2dfa(nfa *NState) []DNode {
+	dtemp := []Dtemp{}                //保存是否求过闭包
+	backLook = append(backLook, *nfa) //回溯还未处理（判断是否求过闭包）的新状态
+	dArr := []DNode{}                 //最后返回的DFA
 	for len(backLook) > 0 {
 		tempNode := backLook[0]
 		backLook = backLook[1:]
@@ -61,7 +61,7 @@ func Nfa2dfa(nfa *NState) []Dnode {
 				isEnd = true
 			}
 			tempClosure := searchClosure(tempNode)
-			dArr = append(dArr, Dnode{tempClosure, isEnd, []Dstate{}})
+			dArr = append(dArr, DNode{tempClosure, isEnd, []DState{}})
 			//临时变量，用来保存闭包
 			Oedema := Dtemp{tempNode, tempClosure}
 			dtemp = append(dtemp, Oedema)
@@ -76,12 +76,12 @@ func Nfa2dfa(nfa *NState) []Dnode {
 
 	//构建dfa
 	for i := 0; i < len(dArr); i++ {
-		for j := 0; j < len(dArr[i].Nnodes); j++ {
-			if dArr[i].Nnodes[j].C <= 255 {
+		for j := 0; j < len(dArr[i].NStates); j++ {
+			if dArr[i].NStates[j].C <= 255 {
 				idx := 0
 				for true {
-					if dtemp[idx].Nnode == *dArr[i].Nnodes[j].Out1 {
-						dArr[i].Dout = append(dArr[i].Dout, Dstate{dArr[i].Nnodes[j].C, &dArr[idx]})
+					if dtemp[idx].Nnode == *dArr[i].NStates[j].Out1 {
+						dArr[i].DOut = append(dArr[i].DOut, DState{dArr[i].NStates[j].C, &dArr[idx]})
 						break
 					}
 					idx++
@@ -92,8 +92,8 @@ func Nfa2dfa(nfa *NState) []Dnode {
 
 	for i := 0; i < len(dArr); i++ {
 		fmt.Println("Dfa out C: ")
-		for j := 0; j < len(dArr[i].Dout); j++ {
-			fmt.Println(dArr[i].Dout[j].C)
+		for j := 0; j < len(dArr[i].DOut); j++ {
+			fmt.Println(dArr[i].DOut[j].C)
 		}
 	}
 	return dArr

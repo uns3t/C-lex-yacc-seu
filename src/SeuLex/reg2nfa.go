@@ -13,12 +13,10 @@ import (
 */
 
 //实现 合并两个nfa
-func merge(n1, n2 NState, cs1, cs2 map[int]string) (*NState, map[int]string) {
-	n := NState{888888, 257, &n1, &n2, ""}
-	for k, v := range cs2 {
-		cs1[k] = v
-	}
-	return &n, cs1
+func merge(n1, n2 *NState) *NState {
+	n := NState{888888, 257, n1, n2, ""}
+
+	return &n
 }
 
 //中缀表达式转后缀表达式

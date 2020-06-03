@@ -43,7 +43,8 @@ func main() {
 	fmt.Println("正则表达式转nfa完成\n ")
 
 	fmt.Println("nfa转dfa:")
-	//dNodes:=SeuLex.Nfa2dfa(startState)
+	DNodes := SeuLex.Nfa2dfa(startState)
+	_ = DNodes
 	fmt.Println("nfa转dfa\n ")
 	//TestDfa2nfa()
 	//time.Sleep(1000)

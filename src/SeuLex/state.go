@@ -24,15 +24,16 @@ type Fragment struct {
 	End   *NState // 尾节点
 }
 
-type Dnode struct {
-	Nnodes []NState
-	isEnd  bool
-	Dout   []Dstate
+type DNode struct {
+	NStates []NState
+	isEnd   bool
+	DOut    []DState
+	//感觉这里可以用 map[int]*DNode  key: int C    value:  *DNode Out		-王伟
 }
 
-type Dstate struct {
+type DState struct {
 	C   int
-	Out *Dnode
+	Out *DNode
 }
 
 func NewNState() *NState {
