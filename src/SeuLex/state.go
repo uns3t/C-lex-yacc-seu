@@ -26,8 +26,9 @@ type Fragment struct {
 
 type DNode struct {
 	NStates []NState
+	id int
 	isEnd   bool
-	DOut    []DState
+	DOut    []*DState
 	//感觉这里可以用 map[int]*DNode  key: int C    value:  *DNode Out		-王伟
 }
 
@@ -36,11 +37,6 @@ type DState struct {
 	Out *DNode
 }
 
-type DFAstate struct {
-	isEnd bool
-	id	int
-	value []*DState
-}
 
 func NewNState() *NState {
 	return &NState{0, 0, nil, nil, ""}

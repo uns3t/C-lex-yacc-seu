@@ -38,17 +38,17 @@ type Dtemp struct {
 	NClosure []NState
 }
 
-func Nfa2dfa(nfa *NState) []*DFAstate {
-	dtemp := []Dtemp{}                //保存是否求过闭包
+func Nfa2dfa(nfa *NState) []*DNode {
+	dTemp := make([]Dtemp,0)               //保存是否求过闭包
 	backLook = append(backLook, *nfa) //回溯还未处理（判断是否求过闭包）的新状态
-	dArr := []DNode{}                 //最后返回的DFA
+	dArr := make([]*DNode,0)              //最后返回的DFA
 	for len(backLook) > 0 {
 		tempNode := backLook[0]
 		backLook = backLook[1:]
 		flag := false
 		//判断是否求过闭包
-		for i := 0; i < len(dtemp); i++ {
-			if dtemp[i].Nnode == tempNode {
+		for i := 0; i < len(dTemp); i++ {
+			if dTemp[i].Nnode == tempNode {
 				flag = true
 			}
 		}
@@ -59,10 +59,10 @@ func Nfa2dfa(nfa *NState) []*DFAstate {
 				isEnd = true
 			}
 			tempClosure := searchClosure(tempNode)
-			dArr = append(dArr, DNode{tempClosure, isEnd, []DState{}})
+			dArr = append(dArr, DNode{tempClosure,0, isEnd, []*DState{}})
 			//临时变量，用来保存闭包
 			Oedema := Dtemp{tempNode, tempClosure}
-			dtemp = append(dtemp, Oedema)
+			dTemp = append(dTemp, Oedema)
 
 			for i := 0; i < len(tempClosure); i++ {
 				if tempClosure[i].C <= 255 {
@@ -78,8 +78,8 @@ func Nfa2dfa(nfa *NState) []*DFAstate {
 			if dArr[i].NStates[j].C <= 255 {
 				idx := 0
 				for true {
-					if dtemp[idx].Nnode == *dArr[i].NStates[j].Out1 {
-						dArr[i].DOut = append(dArr[i].DOut, DState{dArr[i].NStates[j].C, &dArr[idx]})
+					if dTemp[idx].Nnode == *dArr[i].NStates[j].Out1 {
+						dArr[i].DOut = append(dArr[i].DOut, &DState{dArr[i].NStates[j].C, &dArr[idx]})
 						break
 					}
 					idx++
@@ -87,15 +87,10 @@ func Nfa2dfa(nfa *NState) []*DFAstate {
 			}
 		}
 	}
-
-	retArray:=make([]*DFAstate,0)
-	for i := 0; i < len(dArr); i++ {
-		value:=make([]*DState,0)
-		for j:=range dArr[i].DOut{
-			value=append(value,&dArr[i].DOut[j])
-		}
-		temp:=DFAstate{dArr[i].isEnd,i,value}
-		retArray=append(retArray,&temp)
+	for k:=range dArr{
+		dArr[k].id=k
+		dArr[k].NStates=nil
 	}
-	return retArray
+
+	return dArr
 }
