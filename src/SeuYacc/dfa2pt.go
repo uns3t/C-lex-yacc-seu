@@ -1,6 +1,7 @@
 package SeuYacc
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -21,13 +22,14 @@ func getStateId(stateIdStr string) int {
 	return stateId
 }
 
-func dfaToParsingTable(I0 *lrState, grammar *Grammar) map[int]ActionAndGoto {
+func DfaToParsingTable(I0 *lrState, grammar *Grammar) map[int]*ActionAndGoto {
 	//let parsingTable = {}
-	var parsingTable map[int]ActionAndGoto
+	var parsingTable = make(map[int]*ActionAndGoto)
 	var stateId1, stateId2 int
 	for stateName, state := range GenerateLR1DFA(I0, grammar) {
 		// 移进和GOTO
 		stateId1 = getStateId(stateName)
+		parsingTable[stateId1] = &ActionAndGoto{make(map[string]string), make(map[string]int)}
 		for k, v := range state.edge {
 			stateId2 = getStateId(v)
 			if isVn(grammar, k) {
@@ -61,4 +63,18 @@ func dfaToParsingTable(I0 *lrState, grammar *Grammar) map[int]ActionAndGoto {
 		}
 	}
 	return parsingTable
+}
+
+func PrintParsingTable(pt map[int]*ActionAndGoto) {
+	fmt.Println("ParsingTable:")
+	for stateId, AAG := range pt {
+		fmt.Println("stateId:" + strconv.Itoa(stateId) + "	")
+		for vt, actionJob := range AAG.actionTable {
+			fmt.Print(vt + " " + actionJob + "  ")
+		}
+		fmt.Println()
+		for vn, gotoJob := range AAG.gotoTable {
+			fmt.Print(vn + " " + strconv.Itoa(gotoJob) + "  ")
+		}
+	}
 }

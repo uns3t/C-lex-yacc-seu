@@ -25,7 +25,7 @@ func main() {
 	fmt.Println("没有规范化的正则表达式:\n" + regularExpression)
 
 	//读入lex源文件
-	SeuLex.ScanStart("./input/lextest.l", "./output/test.c")
+	SeuLex.ScanStart("./input/lextest.l", "./output/testLex.c")
 	SeuLex.ReplacePredefinedElements("(L)?\"(((\\\\.)|[^\\\\\"\\n])*)\"")
 	//对源文件进行分割
 	str := SeuLex.Formalize(regularExpression)
