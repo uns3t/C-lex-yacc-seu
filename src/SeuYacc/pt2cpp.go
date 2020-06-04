@@ -79,33 +79,35 @@ func ParsingTableToCpp(parsingTable map[int]*ActionAndGoto, grammar Grammar) {
 	var code string
 
 	for stateId, ActionAndGoto := range parsingTable {
+		//action部分转换
 		var actions []string
 		for vt, job := range ActionAndGoto.actionTable {
 			if strings.HasPrefix(job, "S") {
-				code = "if ( a ==\" " + vt + "\" ) { S(" + strconv.Itoa(stateId) + "); return 0; }"
+				code = "if ( a ==\" " + vt + "\" )\n {\n S(" + strconv.Itoa(stateId) + ");\n return 0;\n }"
 				actions = append(actions, code)
 			} else if job == "r0" {
-				code = "if ( a == \"" + vt + "\" ) { return 1; }"
+				code = "if ( a == \"" + vt + "\" ) {\n return 1;\n }"
 				actions = append(actions, code)
 			} else if strings.HasPrefix(job, "r") {
 				job1 := string([]byte(job)[1:])
 				leftPart := getLeftPart(grammar, job1)
 				rightPart := getRightPart(grammar, job1)
-				code = "if ( a == \"" + vt + "\") {  r(" + strconv.Itoa(len(rightPart)) + ",\"" + leftPart + "\");" +
-					"" + " return 0; }"
+				code = "if ( a == \"" + vt + "\")\n {\n  r(" + strconv.Itoa(len(rightPart)) + ",\"" + leftPart + "\");" +
+					"" + " return 0;\n }"
+				code += "std::cout << \"归约：\" << \"" + leftPart + "\" => \" << \"" + strings.Join(rightPart, " ") + "\" << std::endl;\n"
 				actions = append(actions, code)
 			}
 		}
-		code = "case" + strconv.Itoa(stateId) + ":" + strings.Join(actions, "\n") + "return -1;"
+		code = "case " + strconv.Itoa(stateId) + ":\n" + strings.Join(actions, "\n") + "\nreturn -1;"
 		actionTableItem = append(actionTableItem, code)
 
 		// goto部分转换
 		var gotos []string
-		for vn, job := range ActionAndGoto.actionTable {
-			code = " if (vn == \"" + vn + "\") return" + job + ";"
+		for vn, job := range ActionAndGoto.gotoTable {
+			code = " if (vn == \"" + vn + "\") \n return " + strconv.Itoa(job) + ";"
 			gotos = append(gotos, code)
 		}
-		code = "case" + strconv.Itoa(stateId) + ":" + strings.Join(gotos, "\n") + "return -1;"
+		code = "case" + strconv.Itoa(stateId) + ":\n" + strings.Join(gotos, "\n") + "\nreturn -1;"
 		gotoTableItem = append(gotoTableItem, code)
 
 	}
