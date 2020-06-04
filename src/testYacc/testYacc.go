@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	yaccFile := SeuYacc.LoadYaccFile("./input/c99.y")
+	yaccFile := SeuYacc.LoadYaccFile("./input/yacctest.y")
 	grammar := SeuYacc.YaccToGrammar(yaccFile)
 	dfaItem := SeuYacc.NewLrState("I0")
 	dfaItem.PutItems("0-0", strings.Split("$", ""), 0, strings.Split(grammar.GrammarStart(), ""))

@@ -3,6 +3,7 @@ package SeuYacc
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type pNode struct {
@@ -23,7 +24,7 @@ func (this *Grammar) GrammarStart() string {
 
 func arrayInclude(arr []string, val string) bool {
 	for _, v := range arr {
-		if val == v {
+		if strings.Compare(v,val)==0 {
 			return true
 		}
 	}

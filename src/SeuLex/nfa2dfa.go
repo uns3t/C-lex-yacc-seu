@@ -14,9 +14,9 @@ package SeuLex
 
 var backLook []NState
 
-func searchClosure(Nnode NState) []NState {
-	ret := []NState{}
-	back := []NState{Nnode}
+func searchClosure(nNode NState) []NState {
+	ret := make([]NState,0)
+	back := []NState{nNode}
 	for len(back) > 0 {
 		temp := back[len(back)-1]
 		back = back[:len(back)-1]
