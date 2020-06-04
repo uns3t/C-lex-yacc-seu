@@ -3,12 +3,13 @@ package SeuYacc
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
 //parsing table to cpp
 
-func parsingTableToCpp(parsingTable map[int]ActionAndGoto, grammar Grammar) {
+func ParsingTableToCpp(parsingTable map[int]*ActionAndGoto, grammar Grammar) {
 	head := `#include <iostream>
     #include <fstream>
     #include <vector>
@@ -81,7 +82,7 @@ func parsingTableToCpp(parsingTable map[int]ActionAndGoto, grammar Grammar) {
 		var actions []string
 		for vt, job := range ActionAndGoto.actionTable {
 			if strings.HasPrefix(job, "S") {
-				code = "if ( a ==\" " + vt + "\" ) { S(" + string(stateId) + "); return 0; }"
+				code = "if ( a ==\" " + vt + "\" ) { S(" + strconv.Itoa(stateId) + "); return 0; }"
 				actions = append(actions, code)
 			} else if job == "r0" {
 				code = "if ( a == \"" + vt + "\" ) { return 1; }"
@@ -90,12 +91,12 @@ func parsingTableToCpp(parsingTable map[int]ActionAndGoto, grammar Grammar) {
 				job1 := string([]byte(job)[1:])
 				leftPart := getLeftPart(grammar, job1)
 				rightPart := getRightPart(grammar, job1)
-				code = "if ( a == \"" + vt + "\") {  r(" + string(len(rightPart)) + ",\"" + leftPart + "\");" +
+				code = "if ( a == \"" + vt + "\") {  r(" + strconv.Itoa(len(rightPart)) + ",\"" + leftPart + "\");" +
 					"" + " return 0; }"
 				actions = append(actions, code)
 			}
 		}
-		code = "case" + string(stateId) + ":" + strings.Join(actions, "\n") + "return -1;"
+		code = "case" + strconv.Itoa(stateId) + ":" + strings.Join(actions, "\n") + "return -1;"
 		actionTableItem = append(actionTableItem, code)
 
 		// goto部分转换
@@ -104,12 +105,12 @@ func parsingTableToCpp(parsingTable map[int]ActionAndGoto, grammar Grammar) {
 			code = " if (vn == \"" + vn + "\") return" + job + ";"
 			gotos = append(gotos, code)
 		}
-		code = "case" + string(stateId) + ":" + strings.Join(gotos, "\n") + "return -1;"
+		code = "case" + strconv.Itoa(stateId) + ":" + strings.Join(gotos, "\n") + "return -1;"
 		gotoTableItem = append(gotoTableItem, code)
 
 	}
 
-	var actionTableOutput []string
+	var actionTableOutput = make([]string, 3)
 	actionTableOutput[0] = `
     int actionTable(int s, std::string a) {
         switch (s) {
@@ -124,7 +125,7 @@ func parsingTableToCpp(parsingTable map[int]ActionAndGoto, grammar Grammar) {
     `
 	actionTableOutputStr := strings.Join(actionTableOutput, "\n")
 
-	var gotoTableOutput []string
+	var gotoTableOutput = make([]string, 3)
 	gotoTableOutput[0] = `
     int gotoTable(int t, std::string vn) {
         switch (t) {

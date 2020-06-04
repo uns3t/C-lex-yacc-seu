@@ -13,4 +13,5 @@ func main() {
 	//SeuYacc.GenerateLR1DFA(dfaItem,&grammar)
 	parsingTable := SeuYacc.DfaToParsingTable(dfaItem, &grammar)
 	SeuYacc.PrintParsingTable(parsingTable)
+	SeuYacc.ParsingTableToCpp(parsingTable, grammar)
 }
