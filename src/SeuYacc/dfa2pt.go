@@ -31,13 +31,14 @@ func DfaToParsingTable(I0 *lrState, grammar *Grammar) map[int]*ActionAndGoto {
 		stateId1 = getStateId(stateName)
 		parsingTable[stateId1] = &ActionAndGoto{make(map[string]string), make(map[string]int)}
 		for k, v := range state.edge {
-			stateId2 = getStateId(v)
+			stateId2 = getStateId(v) //这边有问题
+			//stateId2=strconv.Itoa(strings.Split(,"-")[0])
 			if isVn(grammar, k) {
 				// 非终结符填入 GOTO 子表
 				parsingTable[stateId1].gotoTable[k] = stateId2
 			} else {
 				// 终结符填入 ACTION 子表 - 移进动作不会有冲突
-				parsingTable[stateId1].actionTable[k] = "S" + string(stateId2)
+				parsingTable[stateId1].actionTable[k] = "S" + strconv.Itoa(stateId2)
 			}
 		}
 		// 归约操作
@@ -76,5 +77,6 @@ func PrintParsingTable(pt map[int]*ActionAndGoto) {
 		for vn, gotoJob := range AAG.gotoTable {
 			fmt.Print(vn + " " + strconv.Itoa(gotoJob) + "  ")
 		}
+		fmt.Println()
 	}
 }

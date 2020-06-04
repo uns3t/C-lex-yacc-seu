@@ -90,7 +90,8 @@ func parsingTableToCpp(parsingTable map[int]ActionAndGoto, grammar Grammar) {
 				job1 := string([]byte(job)[1:])
 				leftPart := getLeftPart(grammar, job1)
 				rightPart := getRightPart(grammar, job1)
-				code = "if ( a == \"" + vt + "\") {  r(" + string(len(rightPart)) + ",\"" + leftPart + "\"); return 0; }"
+				code = "if ( a == \"" + vt + "\") {  r(" + string(len(rightPart)) + ",\"" + leftPart + "\");" +
+					"" + " return 0; }"
 				actions = append(actions, code)
 			}
 		}
