@@ -3,6 +3,8 @@ package main
 import (
 	"SeuLex"
 	"fmt"
+	"nfa2dfa_2"
+	"strconv"
 	"strings"
 )
 
@@ -17,6 +19,35 @@ func TestDfa2nfa() {
 	//Nnode3.Out1 = &Nnode4
 	//dArr:=SeuLex.Nfa2dfa(Nnode1)
 	//SeuLex.Dfa2c(dArr)
+}
+
+func TestDfa2nfa2() {
+	Nnode1 := nfa2dfa_2.NState{0, 257, nil, nil, ""}
+	Nnode2 := nfa2dfa_2.NState{1, 97, nil, nil, ""}
+	Nnode3 := nfa2dfa_2.NState{2, 98, nil, nil, ""}
+	Nnode4 := nfa2dfa_2.NState{3, 256, nil, nil, ""}
+	Nnode1.Out1 = &Nnode2
+	Nnode1.Out2 = &Nnode3
+	Nnode2.Out1 = &Nnode4
+	Nnode3.Out1 = &Nnode4
+	id2NState := make(map[int]*nfa2dfa_2.NState)
+	id2NState[0] = &Nnode1
+	id2NState[1] = &Nnode2
+	id2NState[2] = &Nnode3
+	id2NState[3] = &Nnode4
+	_, id2DState := nfa2dfa_2.Nfa2Dfa(&Nnode1, id2NState)
+	for dStateId, dState := range id2DState {
+		fmt.Print("stateId:" + strconv.Itoa(dStateId) + " ; ")
+		if dState.IsEnd {
+			fmt.Println(" isEnd")
+		} else {
+			fmt.Println(" notEnd")
+		}
+		for c, out := range dState.Out {
+			fmt.Print("C:" + strconv.Itoa(c) + " " + strconv.Itoa(out.StateId) + "; ")
+		}
+		fmt.Println()
+	}
 }
 
 func main() {
@@ -46,6 +77,7 @@ func main() {
 	DNodes := SeuLex.Nfa2dfa(startState)
 	_ = DNodes
 	fmt.Println("nfa转dfa\n ")
-	//TestDfa2nfa()
+
+	TestDfa2nfa2()
 	//time.Sleep(1000)
 }

@@ -1,7 +1,7 @@
 package SeuLex
 
 type NState struct {
-	stateId int
+	StateId int
 	/*选择2^8是因为string[i]类型为uint8
 	256 match
 	257 spilt

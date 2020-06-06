@@ -208,20 +208,20 @@ func Post2Nfa(post []string, funcStr string) (*NState, map[int]*NState) {
 		f.End.Out1 = &End
 		f.End = &End
 	}
-	fmt.Println("起始状态stateId" + strconv.Itoa(f.Start.stateId))
+	fmt.Println("起始状态stateId" + strconv.Itoa(f.Start.StateId))
 	return f.Start, id2state
 
 }
 
 func PrintNfa(id2state map[int]*NState) {
 	for stateId, state := range id2state {
-		fmt.Print("stateId:" + strconv.Itoa(stateId) + ";  ")
+		fmt.Print("StateId:" + strconv.Itoa(stateId) + ";  ")
 		fmt.Print("C:" + strconv.Itoa(state.C) + ";  ")
 		if state.Out1 != nil {
-			fmt.Print("Out1:" + strconv.Itoa(state.Out1.stateId) + ";  ")
+			fmt.Print("Out1:" + strconv.Itoa(state.Out1.StateId) + ";  ")
 		}
 		if state.Out2 != nil {
-			fmt.Print("Out2:" + strconv.Itoa(state.Out2.stateId) + ";  ")
+			fmt.Print("Out2:" + strconv.Itoa(state.Out2.StateId) + ";  ")
 		}
 		if state.EndFunc != "" {
 			fmt.Println("EndFunc:" + state.EndFunc + ";  ")
