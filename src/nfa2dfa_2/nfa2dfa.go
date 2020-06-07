@@ -1,6 +1,10 @@
 package nfa2dfa_2
 
-import "reflect"
+import (
+	"fmt"
+	"reflect"
+	"strconv"
+)
 
 //求闭包
 func searchClosure(nState *NState) []*NState {
@@ -115,4 +119,19 @@ func getOuts(dState *DState) map[int]map[int]*NFAState {
 		}
 	}
 	return outNfaStates
+}
+
+func PrintDFA(id2DState map[int]*DState) {
+	for dStateId, dState := range id2DState {
+		fmt.Print("stateId:" + strconv.Itoa(dStateId) + " ; ")
+		if dState.IsEnd {
+			fmt.Println(" isEnd")
+		} else {
+			fmt.Println(" notEnd")
+		}
+		for c, out := range dState.Out {
+			fmt.Print("C:" + strconv.Itoa(c) + " " + strconv.Itoa(out.StateId) + "; ")
+		}
+		fmt.Println()
+	}
 }

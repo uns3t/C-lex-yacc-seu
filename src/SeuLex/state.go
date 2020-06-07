@@ -10,12 +10,12 @@ type NState struct {
 	C int
 
 	//isStart    bool
-	//isEnd      bool
+	//IsEnd      bool
 	//transition map[string]*NState
 	//实边
 	Out1    *NState
 	Out2    *NState
-	EndFunc string // 结束状态所对应的函数, 只有该点为Match时, 值可以视为有效
+	EndFunc string //只有该点为Match时, 值可以视为有效
 }
 
 //NFA片段
@@ -24,22 +24,34 @@ type Fragment struct {
 	End   *NState // 尾节点
 }
 
-type DNode struct {
-	NStates []NState
-	isEnd   bool
-	DOut    []DState
-	//感觉这里可以用 map[int]*DNode  key: int C    value:  *DNode Out		-王伟
+//消除了ε边的NFA
+type NFAState struct {
+	StateId int
+	NStates map[int]*NState
+	IsEnd   bool
+	Outs    []*Out
+	EndFunc string //只有该点为Match时, 值可以视为有效
+}
+type Out struct {
+	C        int
+	NFAState *NFAState
 }
 
+//Nfa确定化之后的dfa
 type DState struct {
-	C   int
-	Out *DNode
+	StateId   int
+	NFAStates map[int]*NFAState
+	IsEnd     bool
+	Out       map[int]*DState
+	EndFunc   string //只有该点为Match时, 值可以视为有效
 }
 
-type DFAstate struct {
-	isEnd bool
-	id    int
-	value []*DState
+func NewNFAState(DStateId int) *NFAState {
+	return &NFAState{DStateId, make(map[int]*NState), false, make([]*Out, 0), ""}
+}
+
+func NewDState(DStateId int) *DState {
+	return &DState{DStateId, make(map[int]*NFAState), false, make(map[int]*DState), ""}
 }
 
 func NewNState() *NState {

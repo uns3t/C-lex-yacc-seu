@@ -4,7 +4,6 @@ import (
 	"SeuLex"
 	"fmt"
 	"nfa2dfa_2"
-	"strconv"
 	"strings"
 )
 
@@ -36,18 +35,7 @@ func TestDfa2nfa2() {
 	id2NState[2] = &Nnode3
 	id2NState[3] = &Nnode4
 	_, id2DState := nfa2dfa_2.Nfa2Dfa(&Nnode1, id2NState)
-	for dStateId, dState := range id2DState {
-		fmt.Print("stateId:" + strconv.Itoa(dStateId) + " ; ")
-		if dState.IsEnd {
-			fmt.Println(" isEnd")
-		} else {
-			fmt.Println(" notEnd")
-		}
-		for c, out := range dState.Out {
-			fmt.Print("C:" + strconv.Itoa(c) + " " + strconv.Itoa(out.StateId) + "; ")
-		}
-		fmt.Println()
-	}
+	nfa2dfa_2.PrintDFA(id2DState)
 }
 
 func main() {
@@ -69,15 +57,17 @@ func main() {
 	fmt.Println("正则表达式中缀转后缀完成\n ")
 
 	fmt.Println("正则表达式转nfa:")
-	startState, id2state := SeuLex.Post2Nfa(postStr, "Hello")
-	SeuLex.PrintNfa(id2state)
+	nStart, id2NState := SeuLex.Post2Nfa(postStr, "Hello")
+	SeuLex.PrintNfa(id2NState)
 	fmt.Println("正则表达式转nfa完成\n ")
 
 	fmt.Println("nfa转dfa:")
-	DNodes := SeuLex.Nfa2dfa(startState)
-	_ = DNodes
-	fmt.Println("nfa转dfa\n ")
+	dStart, id2DState := SeuLex.Nfa2Dfa(nStart, id2NState)
+	SeuLex.PrintDFA(id2DState)
+	_ = dStart
+	fmt.Println("nfa转dfa完成\n ")
 
-	TestDfa2nfa2()
-	//time.Sleep(1000)
+	//TestDfa2nfa2()
+	fmt.Println("dfa转cpp:")
+	SeuLex.Dfa2Cpp(id2DState, "")
 }

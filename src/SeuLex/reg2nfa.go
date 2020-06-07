@@ -15,7 +15,6 @@ import (
 //实现 合并两个nfa
 func merge(n1, n2 *NState) *NState {
 	n := NState{888888, 257, n1, n2, ""}
-
 	return &n
 }
 
