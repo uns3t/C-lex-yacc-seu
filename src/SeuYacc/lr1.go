@@ -34,7 +34,13 @@ func nextStep(dfaItem *lrState, edge string) *lrState {
 	return newDfaItem
 }
 
-func GenerateLR1DFA(I0 *lrState,grammar *Grammar) map[string]*lrState {
+func GenerateLR1(grammar *Grammar) map[string]*lrState {
+	dfaItem := NewLrState("I0")
+	dfaItem.PutItems("0-0", strings.Split("$", ""), 0, strings.Split(grammar.GrammarStart(), ""))
+	return generateLR1DFA(dfaItem,grammar)
+}
+
+func generateLR1DFA(I0 *lrState,grammar *Grammar) map[string]*lrState {
 	lrDFA := make(map[string]*lrState)
 	lr1DfaSigniture := make(map[string]string)
 	dfaItemQ := NewDfaQueue()
