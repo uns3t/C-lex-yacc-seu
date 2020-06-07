@@ -10,7 +10,8 @@ import (
 //parsing table to cpp
 
 func ParsingTableToCpp(parsingTable map[int]*ActionAndGoto, grammar Grammar) {
-	head := `#include <iostream>
+	head := `
+	#include <iostream>
     #include <fstream>
     #include <vector>
     #include <string>

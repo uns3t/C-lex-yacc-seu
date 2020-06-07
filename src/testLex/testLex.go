@@ -39,12 +39,16 @@ func TestDfa2nfa2() {
 }
 
 func main() {
+	test2()
+}
+
+func test1() {
 	//"(L)?\\\"(((\\\\\\\\.)|[^\\\\\\\\\\\"\\\\n])*)\\\""
 	regularExpression := "(a|b|c)?"
 	fmt.Println("没有规范化的正则表达式:\n" + regularExpression)
 
 	//读入lex源文件
-	SeuLex.ScanStart("./input/lextest.l", "./output/testLex.c")
+	SeuLex.ScanStart("./input/lextest.l")
 	SeuLex.ReplacePredefinedElements("(L)?\"(((\\\\.)|[^\\\\\"\\n])*)\"")
 	//对源文件进行分割
 	str := SeuLex.Formalize(regularExpression)
@@ -69,5 +73,9 @@ func main() {
 
 	//TestDfa2nfa2()
 	fmt.Println("dfa转cpp:")
-	SeuLex.Dfa2Cpp(id2DState, "")
+	SeuLex.Dfa2Cpp(id2DState, "", "")
+}
+
+func test2() {
+	SeuLex.Lex("./input/lextest.l")
 }

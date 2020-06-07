@@ -7,9 +7,10 @@ import (
 	"strings"
 )
 
-func Dfa2Cpp(id2DState map[int]*DState, userDefineProgram string) {
+func Dfa2Cpp(id2DState map[int]*DState, userDefineHead string, userDefineProgram string) {
 
-	head := `
+	head := userDefineHead
+	head += `
     #include <iostream>
     #include <string>
     #include <fstream>
@@ -57,7 +58,7 @@ func Dfa2Cpp(id2DState map[int]*DState, userDefineProgram string) {
 		if dState.IsEnd {
 			//EndFunc
 			code = "\t\tdefault:\n" +
-				"\t\t\t" + "" +
+				"\t\t\t" + dState.EndFunc +
 				"\t\t\tprintf(\"\\n\");\n" +
 				"\t\t\tstate = 0;\n" +
 				"\t\t\tbreak;\n" +

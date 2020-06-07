@@ -1,8 +1,14 @@
 package SeuYacc
 
-//构建预测分析表
-//获取语法
-//获取文法
-//解析lex的输出
-//...
+import "strings"
 
+func Yacc() {
+	yaccFile := LoadYaccFile("./input/yacctest.y")
+	grammar := YaccToGrammar(yaccFile)
+	dfaItem := NewLrState("I0")
+	dfaItem.PutItems("0-0", strings.Split("$", ""), 0, strings.Split(grammar.GrammarStart(), ""))
+	//GenerateLR1DFA(dfaItem,&grammar)
+	parsingTable := DfaToParsingTable(dfaItem, &grammar)
+	PrintParsingTable(parsingTable)
+	ParsingTableToCpp(parsingTable, grammar)
+}

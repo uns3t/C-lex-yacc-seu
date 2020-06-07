@@ -1,8 +1,8 @@
 package SeuLex
 
 import (
-	"C-lex-yacc-seu/src/stack"
 	"fmt"
+	"stack"
 	"strconv"
 )
 
@@ -116,7 +116,14 @@ func Post2Nfa(post []string, funcStr string) (*NState, map[int]*NState) {
 
 		case "|":
 			f1 = FragStack.Pop().(Fragment)
+
 			f2 = FragStack.Pop().(Fragment)
+			//fTemp := FragStack.Pop()
+			//if fTemp==nil {
+			//	fmt.Println(funcStr)
+			//}else {
+			//	f2=fTemp.(Fragment)
+			//}
 
 			Start := NState{stateId, Split, f1.Start, f2.Start, ""}
 			id2state[stateId] = &Start
@@ -166,7 +173,7 @@ func Post2Nfa(post []string, funcStr string) (*NState, map[int]*NState) {
 			break
 
 		case "\\":
-			//转义字符	这边的处理有点问题
+			//转义字符
 			p++
 			End := NState{stateId, Match, nil, nil, ""}
 			id2state[stateId] = &End
