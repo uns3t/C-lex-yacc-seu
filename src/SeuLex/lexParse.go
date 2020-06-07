@@ -12,14 +12,16 @@ import (
 var LexFile *os.File
 var OutFile *os.File
 
-var Def_Map map[string]string
-var Exp_Map map[string]string
+var def_Map map[string]string
+var exp_Map map[string]string
+var includeStr []string
+var commentStr []string
 
 //输入lex文件
-func ScanStart(lexFile string, outFile string) {
+func ScanStart(lexFile string) {
 
-	Def_Map = make(map[string]string)
-	Exp_Map = make(map[string]string)
+	def_Map = make(map[string]string)
+	exp_Map = make(map[string]string)
 
 	file, err := os.Open(lexFile)
 	LexFile = file
@@ -27,15 +29,8 @@ func ScanStart(lexFile string, outFile string) {
 		fmt.Println("打开Lex文件失败", err)
 		return
 	}
-	file = nil
-	file, err = os.OpenFile(outFile, os.O_WRONLY|os.O_CREATE, 0)
-	OutFile = file
-	if err != nil {
-		fmt.Println("打开Out文件失败", err)
-		return
-	}
+
 	defer LexFile.Close()
-	defer OutFile.Close()
 	scanner()
 }
 
@@ -44,19 +39,14 @@ func scanner() {
 	var line = 0
 	var lineS string
 	var text, outPut string
-	var errIn, errOut error
+	var errIn error
 	var reader = bufio.NewReader(LexFile)
-	var writer = bufio.NewWriter(OutFile)
 	for true {
 		line++
 		lineS = strconv.Itoa(line)
 		text, errIn = reader.ReadString('\n')
 		if errIn == io.EOF {
 			fmt.Println("读取文件完成")
-			errF := writer.Flush()
-			if errF != nil {
-				fmt.Println(lineS + "flush失败")
-			}
 			break
 		}
 		switch state {
@@ -71,8 +61,8 @@ func scanner() {
 				} else {
 					arr := strings.Split(text, "\t")
 					exTemp := strings.Split(arr[len(arr)-1], "\n")[0]
-					if Def_Map != nil {
-						Def_Map[arr[0]] = exTemp
+					if def_Map != nil {
+						def_Map[arr[0]] = exTemp
 					}
 				}
 				break
@@ -80,17 +70,13 @@ func scanner() {
 		case 1:
 			{
 				if strings.HasPrefix(text, "%}") {
-					_, errOut = writer.WriteString("//}% end\n")
-					errF := writer.Flush()
-					if errF != nil {
-						fmt.Println(lineS + "flush失败")
-					}
 					state = 0
 				} else {
-					_, errOut = writer.WriteString(text)
-				}
-				if errOut != nil {
-					fmt.Println(lineS + "写入失败")
+					if strings.HasPrefix(text, "#") {
+						includeStr = append(includeStr, text)
+					}else {
+						commentStr = append(commentStr, text)
+					}
 				}
 				break
 			}
@@ -99,11 +85,6 @@ func scanner() {
 			{
 				if strings.HasPrefix(text, "%%") {
 					getRegularAndFunc(outPut)
-					_, errOut = writer.WriteString("//%% end\n")
-					errF := writer.Flush()
-					if errF != nil {
-						fmt.Println(lineS + "flush失败")
-					}
 					state = 3
 				} else if text == "\n" {
 					break
@@ -114,7 +95,7 @@ func scanner() {
 			}
 		case 3:
 			{
-				_, errOut = writer.WriteString(text)
+				commentStr = append(commentStr, text)
 				break
 			}
 		default:
@@ -135,7 +116,7 @@ func getRegularAndFunc(outPut string) {
 	for i := range exp {
 		temp := strings.Split(exp[i], "\t")
 		replacedExp := ReplacePredefinedElements(temp[0])
-		Exp_Map[replacedExp] = temp[len(temp)-1]
+		exp_Map[replacedExp] = temp[len(temp)-1]
 	}
 }
 
@@ -165,12 +146,24 @@ func ReplacePredefinedElements(exp string) string {
 	flag := true
 	for flag {
 		flag = false
-		for k := range Def_Map {
+		for k := range def_Map {
 			if strings.Index(replaced, k) != -1 {
 				flag = true
-				replaced = strings.ReplaceAll(replaced, k, Def_Map[k])
+				replaced = strings.ReplaceAll(replaced, k, def_Map[k])
 			}
 		}
 	}
 	return replaced
+}
+
+func GetInclude() []string {
+	return includeStr
+}
+
+func GetComment() []string {
+	return commentStr
+}
+
+func GetExpMap() map[string]string {
+	return exp_Map
 }
