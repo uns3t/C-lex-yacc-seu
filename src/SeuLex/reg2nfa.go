@@ -13,10 +13,10 @@ import (
 */
 
 //实现 合并两个nfa
-func merge(n1, n2 *NState, counter int) *NState {
+func merge(n1, n2 *NState, counter *int) *NState {
 	if n1 != nil {
-		n := NState{counter, 257, n1, n2, ""}
-		counter++
+		n := NState{*counter, 257, n1, n2, ""}
+		*counter++
 		return &n
 	} else {
 		return n2
@@ -74,7 +74,7 @@ func Postfix(exp []string) []string {
 //后缀表达式转nfa
 //每条正则语句对应于一条NFA
 //funcStr string 该NFA所对应的终止状态的处理函数, 该NFA所对应的结局
-func Post2Nfa(post []string, funcStr string, counter int) (*NState, map[int]*NState) {
+func Post2Nfa(post []string, funcStr string, counter *int) (*NState, map[int]*NState) {
 	//连接符
 	LINK := 01
 	Split := 257
@@ -106,12 +106,12 @@ func Post2Nfa(post []string, funcStr string, counter int) (*NState, map[int]*NSt
 		case "?":
 			//可选的
 			f = FragStack.Pop().(Fragment)
-			End := NState{counter, Match, nil, nil, ""}
-			id2state[counter] = &End
-			counter++
-			Start := NState{counter, Split, f.Start, &End, ""}
-			id2state[counter] = &Start
-			counter++
+			End := NState{*counter, Match, nil, nil, ""}
+			id2state[*counter] = &End
+			*counter++
+			Start := NState{*counter, Split, f.Start, &End, ""}
+			id2state[*counter] = &Start
+			*counter++
 
 			f.End.C = Split
 			f.End.Out1 = &End
@@ -130,12 +130,12 @@ func Post2Nfa(post []string, funcStr string, counter int) (*NState, map[int]*NSt
 			//	f2=fTemp.(Fragment)
 			//}
 
-			Start := NState{counter, Split, f1.Start, f2.Start, ""}
-			id2state[counter] = &Start
-			counter++
-			End := NState{counter, Match, nil, nil, ""}
-			id2state[counter] = &End
-			counter++
+			Start := NState{*counter, Split, f1.Start, f2.Start, ""}
+			id2state[*counter] = &Start
+			*counter++
+			End := NState{*counter, Match, nil, nil, ""}
+			id2state[*counter] = &End
+			*counter++
 
 			f1.End.C = Split
 			f2.End.C = Split
@@ -147,12 +147,12 @@ func Post2Nfa(post []string, funcStr string, counter int) (*NState, map[int]*NSt
 
 		case "*":
 			f = FragStack.Pop().(Fragment)
-			End := NState{counter, Match, nil, nil, ""}
-			id2state[counter] = &End
-			counter++
-			Start := NState{counter, Split, f.Start, &End, ""}
-			id2state[counter] = &Start
-			counter++
+			End := NState{*counter, Match, nil, nil, ""}
+			id2state[*counter] = &End
+			*counter++
+			Start := NState{*counter, Split, f.Start, &End, ""}
+			id2state[*counter] = &Start
+			*counter++
 
 			f.End.C = Split
 			f.End.Out1 = f.Start
@@ -163,12 +163,12 @@ func Post2Nfa(post []string, funcStr string, counter int) (*NState, map[int]*NSt
 
 		case "+":
 			f = FragStack.Pop().(Fragment)
-			Start := NState{counter, Split, f.Start, nil, ""}
-			id2state[counter] = &Start
-			counter++
-			End := NState{counter, Match, nil, nil, ""}
-			id2state[counter] = &End
-			counter++
+			Start := NState{*counter, Split, f.Start, nil, ""}
+			id2state[*counter] = &Start
+			*counter++
+			End := NState{*counter, Match, nil, nil, ""}
+			id2state[*counter] = &End
+			*counter++
 
 			f.End.C = Split
 			f.End.Out1 = f.Start
@@ -180,22 +180,22 @@ func Post2Nfa(post []string, funcStr string, counter int) (*NState, map[int]*NSt
 		case "\\":
 			//转义字符
 			p++
-			End := NState{counter, Match, nil, nil, ""}
-			id2state[counter] = &End
-			counter++
-			Start := NState{counter, int(post[p][0]), &End, nil, ""}
-			id2state[counter] = &Start
-			counter++
+			End := NState{*counter, Match, nil, nil, ""}
+			id2state[*counter] = &End
+			*counter++
+			Start := NState{*counter, int(post[p][0]), &End, nil, ""}
+			id2state[*counter] = &Start
+			*counter++
 			FragStack.Push(Fragment{&Start, &End})
 			break
 
 		default:
-			End := NState{counter, Match, nil, nil, ""}
-			id2state[counter] = &End
-			counter++
-			Start := NState{counter, int(post[p][0]), &End, nil, ""}
-			id2state[counter] = &Start
-			counter++
+			End := NState{*counter, Match, nil, nil, ""}
+			id2state[*counter] = &End
+			*counter++
+			Start := NState{*counter, int(post[p][0]), &End, nil, ""}
+			id2state[*counter] = &Start
+			*counter++
 			FragStack.Push(Fragment{&Start, &End})
 			break
 		}
@@ -212,9 +212,9 @@ func Post2Nfa(post []string, funcStr string, counter int) (*NState, map[int]*NSt
 	if f.End.C == Match {
 		f.End.EndFunc = funcStr
 	} else {
-		End := NState{counter, Match, nil, nil, funcStr}
-		id2state[counter] = &End
-		counter++
+		End := NState{*counter, Match, nil, nil, funcStr}
+		id2state[*counter] = &End
+		*counter++
 		f.End.C = Split
 		f.End.Out1 = &End
 		f.End = &End

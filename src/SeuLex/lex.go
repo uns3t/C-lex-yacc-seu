@@ -18,9 +18,9 @@ func Lex(inputFileName string) {
 		fmt.Println("中缀转后缀...")
 		postExp := Postfix(strings.Split(formalizedExp, ""))
 		fmt.Println("后缀转nfa...")
-		nStartI, id2NStateI := Post2Nfa(postExp, endFunc, counter)
+		nStartI, id2NStateI := Post2Nfa(postExp, endFunc, &counter)
 
-		nStart = merge(nStart, nStartI, counter)
+		nStart = merge(nStart, nStartI, &counter)
 		for stateIdI, nStateI := range id2NStateI {
 			id2NState[stateIdI] = nStateI
 		}
