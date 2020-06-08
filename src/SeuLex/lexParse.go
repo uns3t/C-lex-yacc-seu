@@ -42,11 +42,12 @@ func scanner() {
 	var errIn error
 	var reader = bufio.NewReader(LexFile)
 	for true {
+		fmt.Println("读取到第" + strconv.Itoa(line) + "行")
 		line++
 		lineS = strconv.Itoa(line)
 		text, errIn = reader.ReadString('\n')
 		if errIn == io.EOF {
-			fmt.Println("读取文件完成")
+			fmt.Println("读取.lex文件完成")
 			break
 		}
 		switch state {
@@ -74,7 +75,7 @@ func scanner() {
 				} else {
 					if strings.HasPrefix(text, "#") {
 						includeStr = append(includeStr, text)
-					}else {
+					} else {
 						commentStr = append(commentStr, text)
 					}
 				}

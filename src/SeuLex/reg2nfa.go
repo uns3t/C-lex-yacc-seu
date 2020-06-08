@@ -13,9 +13,15 @@ import (
 */
 
 //实现 合并两个nfa
-func merge(n1, n2 *NState) *NState {
-	n := NState{888888, 257, n1, n2, ""}
-	return &n
+func merge(n1, n2 *NState, counter int) *NState {
+	if n1 != nil {
+		n := NState{counter, 257, n1, n2, ""}
+		counter++
+		return &n
+	} else {
+		return n2
+	}
+
 }
 
 //中缀表达式转后缀表达式
@@ -68,7 +74,7 @@ func Postfix(exp []string) []string {
 //后缀表达式转nfa
 //每条正则语句对应于一条NFA
 //funcStr string 该NFA所对应的终止状态的处理函数, 该NFA所对应的结局
-func Post2Nfa(post []string, funcStr string) (*NState, map[int]*NState) {
+func Post2Nfa(post []string, funcStr string, counter int) (*NState, map[int]*NState) {
 	//连接符
 	LINK := 01
 	Split := 257
@@ -76,7 +82,6 @@ func Post2Nfa(post []string, funcStr string) (*NState, map[int]*NState) {
 
 	fmt.Println("Post2Nfa loading...")
 
-	stateId := 0
 	var FragStack = stack.NewStack()
 	var f, f1, f2 Fragment
 	id2state := make(map[int]*NState)
@@ -87,7 +92,7 @@ func Post2Nfa(post []string, funcStr string) (*NState, map[int]*NState) {
 
 	for p := 0; p < len(post); p++ {
 		switch post[p] {
-		//连接符, 对于两个Frag片段, 如果有连接符存在, 则进行连接操作对于正则表达式来说, 需要选择一个不会被用到的字符
+		//连接符, 对于两个Frag片段, 如果有连接符存在, 则进行连接操作; 对于正则表达式来说, 需要选择一个不会被用到的字符
 		case string(LINK):
 			f2 = FragStack.Pop().(Fragment)
 			f1 = FragStack.Pop().(Fragment)
@@ -101,12 +106,12 @@ func Post2Nfa(post []string, funcStr string) (*NState, map[int]*NState) {
 		case "?":
 			//可选的
 			f = FragStack.Pop().(Fragment)
-			End := NState{stateId, Match, nil, nil, ""}
-			id2state[stateId] = &End
-			stateId++
-			Start := NState{stateId, Split, f.Start, &End, ""}
-			id2state[stateId] = &Start
-			stateId++
+			End := NState{counter, Match, nil, nil, ""}
+			id2state[counter] = &End
+			counter++
+			Start := NState{counter, Split, f.Start, &End, ""}
+			id2state[counter] = &Start
+			counter++
 
 			f.End.C = Split
 			f.End.Out1 = &End
@@ -125,12 +130,12 @@ func Post2Nfa(post []string, funcStr string) (*NState, map[int]*NState) {
 			//	f2=fTemp.(Fragment)
 			//}
 
-			Start := NState{stateId, Split, f1.Start, f2.Start, ""}
-			id2state[stateId] = &Start
-			stateId++
-			End := NState{stateId, Match, nil, nil, ""}
-			id2state[stateId] = &End
-			stateId++
+			Start := NState{counter, Split, f1.Start, f2.Start, ""}
+			id2state[counter] = &Start
+			counter++
+			End := NState{counter, Match, nil, nil, ""}
+			id2state[counter] = &End
+			counter++
 
 			f1.End.C = Split
 			f2.End.C = Split
@@ -142,12 +147,12 @@ func Post2Nfa(post []string, funcStr string) (*NState, map[int]*NState) {
 
 		case "*":
 			f = FragStack.Pop().(Fragment)
-			End := NState{stateId, Match, nil, nil, ""}
-			id2state[stateId] = &End
-			stateId++
-			Start := NState{stateId, Split, f.Start, &End, ""}
-			id2state[stateId] = &Start
-			stateId++
+			End := NState{counter, Match, nil, nil, ""}
+			id2state[counter] = &End
+			counter++
+			Start := NState{counter, Split, f.Start, &End, ""}
+			id2state[counter] = &Start
+			counter++
 
 			f.End.C = Split
 			f.End.Out1 = f.Start
@@ -158,12 +163,12 @@ func Post2Nfa(post []string, funcStr string) (*NState, map[int]*NState) {
 
 		case "+":
 			f = FragStack.Pop().(Fragment)
-			Start := NState{stateId, Split, f.Start, nil, ""}
-			id2state[stateId] = &Start
-			stateId++
-			End := NState{stateId, Match, nil, nil, ""}
-			id2state[stateId] = &End
-			stateId++
+			Start := NState{counter, Split, f.Start, nil, ""}
+			id2state[counter] = &Start
+			counter++
+			End := NState{counter, Match, nil, nil, ""}
+			id2state[counter] = &End
+			counter++
 
 			f.End.C = Split
 			f.End.Out1 = f.Start
@@ -175,22 +180,22 @@ func Post2Nfa(post []string, funcStr string) (*NState, map[int]*NState) {
 		case "\\":
 			//转义字符
 			p++
-			End := NState{stateId, Match, nil, nil, ""}
-			id2state[stateId] = &End
-			stateId++
-			Start := NState{stateId, int(post[p][0]), &End, nil, ""}
-			id2state[stateId] = &Start
-			stateId++
+			End := NState{counter, Match, nil, nil, ""}
+			id2state[counter] = &End
+			counter++
+			Start := NState{counter, int(post[p][0]), &End, nil, ""}
+			id2state[counter] = &Start
+			counter++
 			FragStack.Push(Fragment{&Start, &End})
 			break
 
 		default:
-			End := NState{stateId, Match, nil, nil, ""}
-			id2state[stateId] = &End
-			stateId++
-			Start := NState{stateId, int(post[p][0]), &End, nil, ""}
-			id2state[stateId] = &Start
-			stateId++
+			End := NState{counter, Match, nil, nil, ""}
+			id2state[counter] = &End
+			counter++
+			Start := NState{counter, int(post[p][0]), &End, nil, ""}
+			id2state[counter] = &Start
+			counter++
 			FragStack.Push(Fragment{&Start, &End})
 			break
 		}
@@ -207,9 +212,9 @@ func Post2Nfa(post []string, funcStr string) (*NState, map[int]*NState) {
 	if f.End.C == Match {
 		f.End.EndFunc = funcStr
 	} else {
-		End := NState{stateId, Match, nil, nil, funcStr}
-		id2state[stateId] = &End
-		stateId++
+		End := NState{counter, Match, nil, nil, funcStr}
+		id2state[counter] = &End
+		counter++
 		f.End.C = Split
 		f.End.Out1 = &End
 		f.End = &End
