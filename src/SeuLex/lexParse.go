@@ -118,7 +118,11 @@ func getRegularAndFunc(outPut string) {
 		temp := strings.Split(exp[i], "\t")
 		if strings.HasSuffix(temp[0], "\"") && strings.HasPrefix(temp[0], "\"") {
 			exp_Map[temp[0]] = temp[len(temp)-1]
-		} else {
+		} else if strings.HasPrefix(temp[0],"(\"") && strings.HasSuffix(temp[0],"\")") {
+			x := strings.Split(temp[0],"|")
+			exp_Map[x[0][1:]] = temp[len(temp)-1]
+			exp_Map[x[1][:len(x[1])-1]] = temp[len(temp)-1]
+		}else {
 			replacedExp := ReplacePredefinedElements(temp[0])
 			//if replacedExp!="\r" {
 			//	exp_Map[replacedExp] = temp[len(temp)-1]

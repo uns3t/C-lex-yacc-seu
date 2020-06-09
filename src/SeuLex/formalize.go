@@ -340,9 +340,11 @@ func addConnectPoint(exp string) string {
 }
 
 func Formalize(exp string) string {
-	//if strings.HasPrefix(exp,"\"") && strings.HasSuffix(exp,"\""){
-	//	return exp[1:len(exp)-1]
-	//}
+	if strings.HasPrefix(exp,"\"") && strings.HasSuffix(exp,"\""){
+		return exp[1:len(exp)-1]
+	}else if strings.HasPrefix(exp,"(\"") && strings.HasPrefix(exp,"\")") {
+
+	}
 	return addConnectPoint(
 		escapeReverse(
 			transformZeroOrMore(

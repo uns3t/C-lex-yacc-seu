@@ -9,8 +9,8 @@ import (
 )
 
 func main() {
-	expTest("\"+\"")
-	//test2()
+	//expTest("(\"[\"|\"<:\")")
+	test2()
 	//test1()
 }
 func expTest(exp string) {
