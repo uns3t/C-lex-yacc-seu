@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	expTest("?")
+	expTest("\"+\"")
 	//test2()
 	//test1()
 }

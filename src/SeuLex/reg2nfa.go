@@ -101,21 +101,22 @@ func Post2Nfa(post []string, funcStr string, counter *int) (*NState, map[int]*NS
 			FragStack.Push(Fragment{f1.Start, f2.End})
 			break
 
-		case "?":
-			//可选的
-			f = FragStack.Pop().(Fragment)
-			End := NState{*counter, Match, nil, nil, ""}
-			id2state[*counter] = &End
-			*counter++
-			Start := NState{*counter, Split, f.Start, &End, ""}
-			id2state[*counter] = &Start
-			*counter++
-
-			f.End.C = Split
-			f.End.Out1 = &End
-
-			FragStack.Push(Fragment{&Start, &End})
-			break
+		//在规范化是已经将?转化为*
+		//case "?":
+		//	//可选的
+		//	f = FragStack.Pop().(Fragment)
+		//	End := NState{*counter, Match, nil, nil, ""}
+		//	id2state[*counter] = &End
+		//	*counter++
+		//	Start := NState{*counter, Split, f.Start, &End, ""}
+		//	id2state[*counter] = &Start
+		//	*counter++
+		//
+		//	f.End.C = Split
+		//	f.End.Out1 = &End
+		//
+		//	FragStack.Push(Fragment{&Start, &End})
+		//	break
 
 		case "|":
 			f1 = FragStack.Pop().(Fragment)
@@ -158,21 +159,21 @@ func Post2Nfa(post []string, funcStr string, counter *int) (*NState, map[int]*NS
 			FragStack.Push(Fragment{&Start, &End})
 			break
 
-		case "+":
-			f = FragStack.Pop().(Fragment)
-			Start := NState{*counter, Split, f.Start, nil, ""}
-			id2state[*counter] = &Start
-			*counter++
-			End := NState{*counter, Match, nil, nil, ""}
-			id2state[*counter] = &End
-			*counter++
-
-			f.End.C = Split
-			f.End.Out1 = f.Start
-			f.End.Out2 = &End
-
-			FragStack.Push(Fragment{&Start, &End})
-			break
+		//case "+":
+		//	f = FragStack.Pop().(Fragment)
+		//	Start := NState{*counter, Split, f.Start, nil, ""}
+		//	id2state[*counter] = &Start
+		//	*counter++
+		//	End := NState{*counter, Match, nil, nil, ""}
+		//	id2state[*counter] = &End
+		//	*counter++
+		//
+		//	f.End.C = Split
+		//	f.End.Out1 = f.Start
+		//	f.End.Out2 = &End
+		//
+		//	FragStack.Push(Fragment{&Start, &End})
+		//	break
 
 		case "\\":
 			//转义字符
