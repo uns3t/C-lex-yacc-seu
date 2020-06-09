@@ -57,11 +57,11 @@ func scanner() {
 					state = 1
 				} else if strings.HasPrefix(text, "%%") {
 					state = 2
-				} else if text == "\n" {
+				} else if text == "\r\n" { //WIN \r\n   MAC \n
 					break
 				} else {
 					arr := strings.Split(text, "\t")
-					exTemp := strings.Split(arr[len(arr)-1], "\n")[0]
+					exTemp := strings.Split(arr[len(arr)-1], "\r\n")[0] //WIN \r\n   MAC \n
 					if def_Map != nil {
 						def_Map[arr[0]] = exTemp
 					}
@@ -113,12 +113,12 @@ func scanner() {
 }
 
 func getRegularAndFunc(outPut string) {
-	exp := strings.Split(outPut, "\n")
+	exp := strings.Split(outPut, "\r\n") //WIN \r\n   MAC \n
 	for i := range exp {
 		temp := strings.Split(exp[i], "\t")
-		if strings.HasSuffix(temp[0],"\"") && strings.HasPrefix(temp[0],"\""){
+		if strings.HasSuffix(temp[0], "\"") && strings.HasPrefix(temp[0], "\"") {
 			exp_Map[temp[0]] = temp[len(temp)-1]
-		}else {
+		} else {
 			replacedExp := ReplacePredefinedElements(temp[0])
 			//if replacedExp!="\r" {
 			//	exp_Map[replacedExp] = temp[len(temp)-1]
@@ -167,8 +167,8 @@ func ReplacePredefinedElements(exp string) string {
 			replaced = strings.ReplaceAll(replaced, k, v)
 		}
 	}
-	replaced = strings.ReplaceAll(replaced,"{","(")
-	replaced = strings.ReplaceAll(replaced,"}",")")
+	replaced = strings.ReplaceAll(replaced, "{", "(")
+	replaced = strings.ReplaceAll(replaced, "}", ")")
 	return replaced
 }
 

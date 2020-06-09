@@ -76,7 +76,7 @@ func Postfix(exp []string) []string {
 //funcStr string 该NFA所对应的终止状态的处理函数, 该NFA所对应的结局
 func Post2Nfa(post []string, funcStr string, counter *int) (*NState, map[int]*NState) {
 	//连接符
-	LINK := 01
+	LINK := 226 //正中的点
 	Split := 257
 	Match := 256
 
@@ -119,7 +119,6 @@ func Post2Nfa(post []string, funcStr string, counter *int) (*NState, map[int]*NS
 
 		case "|":
 			f1 = FragStack.Pop().(Fragment)
-
 			f2 = FragStack.Pop().(Fragment)
 			//fTemp := FragStack.Pop()
 			//if fTemp==nil {
