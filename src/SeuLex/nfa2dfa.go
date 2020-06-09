@@ -34,6 +34,7 @@ func Nfa2Dfa(nStart *NState, id2NSate map[int]*NState) (*DState, map[int]*DState
 	validNStates[nStart.StateId] = nStart
 	for _, nState := range id2NSate {
 		if nState.C < 256 {
+			//fmt.Println("有效状态输入字符"+string(nState.C))
 			validNStates[nState.Out1.StateId] = nState.Out1
 		}
 	}
@@ -115,9 +116,9 @@ func isDStateExisted(id2DState map[int]*DState, NFAStates map[int]*NFAState) (bo
 //通过c到达的所有Nfa状态的集合,即DState	c StateId NfaState
 func getOuts(dState *DState) map[int]map[int]*NFAState {
 	outNfaStates := make(map[int]map[int]*NFAState)
-	nfaStates := make(map[int]*NFAState)
 	for _, nfaState := range dState.NFAStates {
 		for _, nfaStateOut := range nfaState.Outs {
+			nfaStates := make(map[int]*NFAState)
 			nfaStates[nfaStateOut.NFAState.StateId] = nfaStateOut.NFAState
 			outNfaStates[nfaStateOut.C] = nfaStates
 		}
@@ -126,16 +127,30 @@ func getOuts(dState *DState) map[int]map[int]*NFAState {
 }
 
 func PrintDFA(id2DState map[int]*DState) {
+	endFuncNum := 0
+	dStateNum := 0
 	for dStateId, dState := range id2DState {
 		fmt.Print("stateId:" + strconv.Itoa(dStateId) + " ; ")
 		if dState.IsEnd {
+			endFuncNum++
 			fmt.Println(" EndFunc:" + dState.EndFunc + "; ")
 		} else {
 			fmt.Println(" notEnd; ")
 		}
 		for c, out := range dState.Out {
-			fmt.Print("C:" + strconv.Itoa(c) + " " + strconv.Itoa(out.StateId) + "; ")
+			if c < 256 {
+				fmt.Print("转义字符:" + string(c) + " " + strconv.Itoa(out.StateId) + "; ")
+			} else if c == 256 {
+				fmt.Print("Match; ")
+			} else {
+				fmt.Print("Spilt; ")
+			}
+
 		}
-		fmt.Println()
+		dStateNum++
+		fmt.Println("\n------")
 	}
+	fmt.Println("统计信息")
+	fmt.Println("dfa状态数" + strconv.Itoa(dStateNum))
+	fmt.Println("endFunc数" + strconv.Itoa(endFuncNum))
 }

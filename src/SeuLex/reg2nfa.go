@@ -219,12 +219,44 @@ func Post2Nfa(post []string, funcStr string, counter *int) (*NState, map[int]*NS
 		f.End.Out1 = &End
 		f.End = &End
 	}
-	fmt.Println("起始状态stateId" + strconv.Itoa(f.Start.StateId))
+	//fmt.Println("起始状态stateId" + strconv.Itoa(f.Start.StateId))
 	return f.Start, id2state
 
 }
 
+func Key2Nfa(key []string, funcStr string, counter *int) (*NState, map[int]*NState) {
+
+	Match := 256
+	id2state := make(map[int]*NState)
+	var f Fragment
+
+	if key == nil {
+		return nil, nil
+	}
+	startNState := NState{*counter, Match, nil, nil, ""}
+	id2state[*counter] = &startNState
+	*counter++
+	f.Start = &startNState
+	f.End = &startNState
+
+	for p := 0; p < len(key); p++ {
+		newNState := NState{*counter, Match, nil, nil, ""}
+		id2state[*counter] = &newNState
+		*counter++
+
+		f.End.C = int(key[p][0])
+		f.End.Out1 = &newNState
+
+		f.End = &newNState
+	}
+
+	f.End.EndFunc = funcStr
+
+	return &startNState, id2state
+}
+
 func PrintNfa(id2state map[int]*NState) {
+	fmt.Print("PrintNfa!!!")
 	for stateId, state := range id2state {
 		fmt.Print("StateId:" + strconv.Itoa(stateId) + ";  ")
 		fmt.Print("C:" + strconv.Itoa(state.C) + ";  ")
@@ -240,4 +272,5 @@ func PrintNfa(id2state map[int]*NState) {
 			fmt.Println("null EndFunc;  ")
 		}
 	}
+	fmt.Println("PrintNfa完成!!!")
 }

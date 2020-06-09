@@ -9,10 +9,12 @@ import (
 )
 
 func main() {
-	//expTest("(\"[\"|\"<:\")")
+	//expTest("\"||\"")
+	//expTest("||")
 	test2()
 	//test1()
 }
+
 func expTest(exp string) {
 	//解析.l文件
 	SeuLex.ScanStart("./input/c99.l")
@@ -76,7 +78,8 @@ func test1() {
 //}
 
 func test2() {
-	SeuLex.Lex("./input/c99.l")
+	//SeuLex.Lex("./input/c99.l")
+	SeuLex.Lex("./input/lextest.l")
 }
 
 func TestDfa2nfa() {
