@@ -42,7 +42,7 @@ func scanner() {
 	var errIn error
 	var reader = bufio.NewReader(LexFile)
 	for true {
-		fmt.Println("读取到第" + strconv.Itoa(line) + "行")
+		//fmt.Println("读取到第" + strconv.Itoa(line) + "行")
 		line++
 		lineS = strconv.Itoa(line)
 		text, errIn = reader.ReadString('\n')
@@ -113,11 +113,16 @@ func scanner() {
 }
 
 func getRegularAndFunc(outPut string) {
-	exp := strings.Split(outPut, "\n")
+	exp := strings.Split(outPut, "\r\n")
 	for i := range exp {
 		temp := strings.Split(exp[i], "\t")
 		replacedExp := ReplacePredefinedElements(temp[0])
-		exp_Map[replacedExp] = temp[len(temp)-1]
+		//if replacedExp!="\r" {
+		//	exp_Map[replacedExp] = temp[len(temp)-1]
+		//}
+		if replacedExp != "" {
+			exp_Map[replacedExp] = temp[len(temp)-1]
+		}
 	}
 }
 
@@ -144,14 +149,18 @@ func EscapeQuotation(exp string) {
 
 func ReplacePredefinedElements(exp string) string {
 	replaced := exp
-	flag := true
-	for flag {
-		flag = false
-		for k := range def_Map {
-			if strings.Index(replaced, k) != -1 {
-				flag = true
-				replaced = strings.ReplaceAll(replaced, k, def_Map[k])
-			}
+	//flag := true
+	//for flag {
+	//	flag = false
+	//	for k,v := range def_Map {
+	//		if strings.Index(replaced, k) != -1 {
+	//			replaced = strings.ReplaceAll(replaced, k, v)
+	//		}
+	//	}
+	//}
+	for k, v := range def_Map {
+		if strings.Index(replaced, k) != -1 {
+			replaced = strings.ReplaceAll(replaced, k, v)
 		}
 	}
 	return replaced

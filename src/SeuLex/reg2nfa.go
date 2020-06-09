@@ -80,8 +80,6 @@ func Post2Nfa(post []string, funcStr string, counter *int) (*NState, map[int]*NS
 	Split := 257
 	Match := 256
 
-	fmt.Println("Post2Nfa loading...")
-
 	var FragStack = stack.NewStack()
 	var f, f1, f2 Fragment
 	id2state := make(map[int]*NState)
@@ -201,13 +199,15 @@ func Post2Nfa(post []string, funcStr string, counter *int) (*NState, map[int]*NS
 		}
 	}
 	f = FragStack.Pop().(Fragment)
-	//f已经是个完整的nfa自动机
-
+	f1 = f
 	// 如果栈中仍然存在其余元素, 则不匹配
 	if FragStack.Len() != 0 {
-		println("error occurred;FragStack非空\n")
-		//this->showNFA(e.Start);
+		f1 = FragStack.Pop().(Fragment)
+		f1.End.C = Split
+		f1.End.Out1 = f.Start
+		f1.End = f.End
 	}
+	f = f1
 
 	if f.End.C == Match {
 		f.End.EndFunc = funcStr

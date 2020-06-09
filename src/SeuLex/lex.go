@@ -2,6 +2,7 @@ package SeuLex
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -10,9 +11,9 @@ func Lex(inputFileName string) {
 	ScanStart(inputFileName)
 	counter := 0
 	var nStart *NState
-	var id2NState map[int]*NState
+	var id2NState = make(map[int]*NState)
 	for exp, endFunc := range GetExpMap() {
-		fmt.Println(counter)
+		fmt.Println(strconv.Itoa(counter) + "  处理的正规表达式: " + exp)
 		fmt.Println("规范化...")
 		formalizedExp := Formalize(exp)
 		fmt.Println("中缀转后缀...")
