@@ -294,27 +294,43 @@ func addConnectPoint(exp string) string{
 	keyChar := "()|*•"
 	for start < len(input)-1 {
 		if !strings.Contains(keyChar,input[start]) && !strings.Contains(keyChar,input[start+1]) && len(input[start+1]) != 0 {
-			head := input[0:start+1]
-			tail := input[start+1:]
-			input = append(append(head, "•"), tail...)
+			var head,tail []string
+			head = make([]string, len(input[0:start+1]))
+			tail = make([]string, len(input[start+1:]))
+			copy(head,input[0:start+1])
+			copy(tail,input[start+1:])
+			head = append(head, "•")
+			input = append(head, tail...)
 			start += 2
 			continue
 		} else if !strings.Contains(keyChar,input[start]) && input[start+1] == "(" && len(input[start+1]) != 0 {
-			head := input[0:start+1]
-			tail := input[start+1:]
-			input = append(append(head, "•"), tail...)
+			var head,tail []string
+			head = make([]string, len(input[0:start+1]))
+			tail = make([]string, len(input[start+1:]))
+			copy(head,input[0:start+1])
+			copy(tail,input[start+1:])
+			head = append(head, "•")
+			input = append(head, tail...)
 			start += 2
 			continue
 		} else if input[start] == ")" && !strings.Contains(keyChar,input[start+1]) && len(input[start+1]) != 0 {
-			head := input[0:start+1]
-			tail := input[start+1:]
-			input = append(append(head, "•"), tail...)
+			var head,tail []string
+			head = make([]string, len(input[0:start+1]))
+			tail = make([]string, len(input[start+1:]))
+			copy(head,input[0:start+1])
+			copy(tail,input[start+1:])
+			head = append(head, "•")
+			input = append(head, tail...)
 			start += 2
 			continue
 		} else if input[start] == ")" && input[start+1] == "(" && len(input[start+1]) != 0 {
-			head := input[0:start+1]
-			tail := input[start+1:]
-			input = append(append(head, "•"), tail...)
+			var head,tail []string
+			head = make([]string, len(input[0:start+1]))
+			tail = make([]string, len(input[start+1:]))
+			copy(head,input[0:start+1])
+			copy(tail,input[start+1:])
+			head = append(head, "•")
+			input = append(head, tail...)
 			start += 2
 			continue
 		}
@@ -335,4 +351,10 @@ func Formalize(exp string) string {
 						transformNegRangeExp(
 							transformAllExp(
 								processUnicodeEscape(exp))))))))
+}
+
+func Test()  {
+	println(addConnectPoint(escapeReverse(transformZeroOrMore(
+		transformOneOrMore(
+		transformRangeExpAdvanced("0[xX]([a-fA-F0-9])+(((u|U)|(u|U)?(l|[a-zA-Z_]|ll|[a-zA-Z_][a-zA-Z_])|(l|[a-zA-Z_]|ll|[a-zA-Z_][a-zA-Z_])(u|U)))?"))))))
 }

@@ -165,10 +165,10 @@ func ReplacePredefinedElements(exp string) string {
 	for k, v := range def_Map {
 		if strings.Index(replaced, k) != -1 {
 			replaced = strings.ReplaceAll(replaced, k, v)
-			replaced = strings.ReplaceAll(replaced,"{","(")
-			replaced = strings.ReplaceAll(replaced,"}",")")
 		}
 	}
+	replaced = strings.ReplaceAll(replaced,"{","(")
+	replaced = strings.ReplaceAll(replaced,"}",")")
 	return replaced
 }
 
