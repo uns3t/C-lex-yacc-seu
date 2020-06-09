@@ -2,7 +2,10 @@ package main
 
 import (
 	"SeuLex"
+	"fmt"
 	"nfa2dfa_2"
+	"strconv"
+	"strings"
 )
 
 func TestDfa2nfa() {
@@ -38,8 +41,24 @@ func TestDfa2nfa2() {
 
 func main() {
 	test2()
+	//test1()
 }
-
+func test1()  {
+	SeuLex.Formalize("((xx))?")
+	SeuLex.Formalize("0[0-7]*{((u|U)|(u|U)?(l|[a-zA-Z_]|ll|[a-zA-Z_][a-zA-Z_])|(l|[a-zA-Z_]|ll|[a-zA-Z_][a-zA-Z_])(u|U))}?\n")
+	l := 0
+	r := 0
+	x := strings.Split("0(0|1|2|3|4|5|6)*{((u|U)|(u|U)?(l|(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|_)|ll|(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|_)(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|_))|(l|(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|_)|ll|(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|_)(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|_))(u|U))}?\n","")
+	for i := range x{
+		if x[i] == "(" {
+			l++
+		}
+		if x[i] == ")" {
+			r++
+		}
+	}
+	fmt.Println("l"+strconv.Itoa(l)+"r"+strconv.Itoa(r))
+}
 //func test1() {
 //	//"(L)?\\\"(((\\\\\\\\.)|[^\\\\\\\\\\\"\\\\n])*)\\\""
 //	regularExpression := "(a|b|c)?"

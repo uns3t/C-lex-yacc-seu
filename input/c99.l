@@ -15,7 +15,7 @@ void count(void);
 
 %%
 "/*"			{ comment(); }
-"//"[^\n]*              { /* consume //-comment */ }
+"//"[^\n]*			{ /* consume //-comment */ }
 
 
 "auto"			{ count(); return(AUTO); }

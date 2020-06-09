@@ -208,7 +208,7 @@ func transformOneOrMore(exp string) string {
 			start := end
 			for i := 1; i > 0; {
 				start--
-				if start < 0 {
+				if start < 0{
 					panic("()+匹配出错")
 				}
 				if (start != 0 && input[start] == "(") || (start == 0 && input[start] == "(") {
@@ -242,7 +242,7 @@ func transformZeroOrMore(exp string) string {
 			start := end
 			for i := 1; i > 0; {
 				start--
-				if start < 0 {
+				if start < 0{
 					panic("()?匹配出错")
 				}
 				if (start != 0 && input[start] == "(") || (start == 0 && input[start] == "(") {
@@ -324,6 +324,9 @@ func addConnectPoint(exp string) string{
 }
 
 func Formalize(exp string) string {
+	if strings.HasPrefix(exp,"\"") && strings.HasSuffix(exp,"\""){
+		return exp[1:len(exp)-1]
+	}
 	return addConnectPoint(
 		escapeReverse(
 			transformZeroOrMore(

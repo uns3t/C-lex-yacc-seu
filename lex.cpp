@@ -1,3 +1,6 @@
+#include <stdio.h>
+
+#include "y.tab.h"
 
     #include <iostream>
     #include <string>
@@ -29,28 +32,126 @@
 
 	
 
+void count(void);
+
+
+
+int yywrap(void)
+
+{
+
+	return 1;
+
+}
+
+
+
+
+
+void comment(void)
+
+{
+
+	char c, prev = 0;
+
+  
+
+	while ((c = input()) != 0)      /* (EOF maps to 0) */
+
+	{
+
+		if (c == '/' && prev == '*')
+
+			return;
+
+		prev = c;
+
+	}
+
+	error("unterminated comment");
+
+}
+
+
+
+
+
+int column = 0;
+
+
+
+void count(void)
+
+{
+
+	int i;
+
+
+
+	for (i = 0; yytext[i] != '\0'; i++)
+
+		if (yytext[i] == '\n')
+
+			column = 0;
+
+		else if (yytext[i] == '\t')
+
+			column += 8 - (column % 8);
+
+		else
+
+			column++;
+
+
+
+	ECHO;
+
+}
+
+
+
+
+
+int check_type(void)
+
+{
+
+/*
+
+* pseudo code --- this is what it should check
+
+*
+
+*	if (yytext == type_name)
+
+*		return TYPE_NAME;
+
+*
+
+*	return IDENTIFIER;
+
+*/
+
+
+
+/*
+
+*	it actually will only return IDENTIFIER
+
+*/
+
+
+
+	return IDENTIFIER;
+
+
  	void dfa(char c){
         switch(state){
 	
 	case 0:
 	switch (c) {
 
-		case "Ã":
-			state=1;
-			cp++;
-			break;
-
-		case "b":
-			state=1;
-			cp++;
-			break;
-
-		case "a":
-			state=1;
-			cp++;
-			break;
-
-		case "c":
+		case "/":
 			state=1;
 			cp++;
 			break;
@@ -66,49 +167,9 @@
 	case 1:
 	switch (c) {
 
-		case "c":
-			state=2;
-			cp++;
-			break;
-
-		case "a":
-			state=2;
-			cp++;
-			break;
-
-		case "b":
-			state=2;
-			cp++;
-			break;
-
 		default:
-						printf("\n");
-			state = 0;
-			break;
-}
-
-	break;
-
-	case 2:
-	switch (c) {
-
-		case "c":
-			state=2;
-			cp++;
-			break;
-
-		case "b":
-			state=2;
-			cp++;
-			break;
-
-		case "a":
-			state=2;
-			cp++;
-			break;
-
-		default:
-						printf("\n");
+			{ /* Add code to complain about unmatched characters */ }
+			printf("\n");
 			state = 0;
 			break;
 }

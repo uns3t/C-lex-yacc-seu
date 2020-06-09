@@ -113,15 +113,19 @@ func scanner() {
 }
 
 func getRegularAndFunc(outPut string) {
-	exp := strings.Split(outPut, "\r\n")
+	exp := strings.Split(outPut, "\n")
 	for i := range exp {
 		temp := strings.Split(exp[i], "\t")
-		replacedExp := ReplacePredefinedElements(temp[0])
-		//if replacedExp!="\r" {
-		//	exp_Map[replacedExp] = temp[len(temp)-1]
-		//}
-		if replacedExp != "" {
-			exp_Map[replacedExp] = temp[len(temp)-1]
+		if strings.HasSuffix(temp[0],"\"") && strings.HasPrefix(temp[0],"\""){
+			exp_Map[temp[0]] = temp[len(temp)-1]
+		}else {
+			replacedExp := ReplacePredefinedElements(temp[0])
+			//if replacedExp!="\r" {
+			//	exp_Map[replacedExp] = temp[len(temp)-1]
+			//}
+			if replacedExp != "" {
+				exp_Map[replacedExp] = temp[len(temp)-1]
+			}
 		}
 	}
 }
@@ -161,6 +165,8 @@ func ReplacePredefinedElements(exp string) string {
 	for k, v := range def_Map {
 		if strings.Index(replaced, k) != -1 {
 			replaced = strings.ReplaceAll(replaced, k, v)
+			replaced = strings.ReplaceAll(replaced,"{","(")
+			replaced = strings.ReplaceAll(replaced,"}",")")
 		}
 	}
 	return replaced
