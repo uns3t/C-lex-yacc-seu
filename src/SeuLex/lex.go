@@ -2,12 +2,14 @@ package SeuLex
 
 import (
 	"fmt"
+	"res"
 	"strconv"
 	"strings"
 )
 
 func Lex(inputFileName string) {
 	//解析.l文件
+	res.SetOSType()
 	ScanStart(inputFileName)
 	counter := 0
 	regNum := 0

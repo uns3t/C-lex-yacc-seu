@@ -150,38 +150,7 @@ int check_type(void)
  	void dfa(char c){
         switch(state){
 	
-	case 1:
-	switch (c) {
-
-		case "â":
-			state=4;
-			cp++;
-			break;
-
-		case "u":
-			state=2;
-			cp++;
-			break;
-
-		case "Ã":
-			state=3;
-			cp++;
-			break;
-
-		case "U":
-			state=1;
-			cp++;
-			break;
-
-		default:
-			printf("ERROR!");
-			state = 0;
-			throw 2;
-			break;
-}
-	break;
-
-	case 2:
+	case 4:
 	switch (c) {
 
 		case "â":
@@ -189,80 +158,18 @@ int check_type(void)
 			cp++;
 			break;
 
-		case "U":
+		case "Ã":
 			state=1;
 			cp++;
 			break;
 
-		case "Ã":
-			state=3;
-			cp++;
-			break;
-
-		case "u":
-			state=2;
-			cp++;
-			break;
-
-		default:
-			printf("ERROR!");
-			state = 0;
-			throw 2;
-			break;
-}
-	break;
-
-	case 3:
-	switch (c) {
-
-		case "â":
-			state=6;
-			cp++;
-			break;
-
 		case "U":
-			state=1;
-			cp++;
-			break;
-
-		case "Ã":
-			state=3;
+			state=4;
 			cp++;
 			break;
 
 		case "u":
-			state=2;
-			cp++;
-			break;
-
-		default:
-			printf("ERROR!");
-			state = 0;
-			throw 2;
-			break;
-}
-	break;
-
-	case 4:
-	switch (c) {
-
-		case "U":
-			state=1;
-			cp++;
-			break;
-
-		case "â":
-			state=6;
-			cp++;
-			break;
-
-		case "Ã":
 			state=3;
-			cp++;
-			break;
-
-		case "u":
-			state=2;
 			cp++;
 			break;
 
@@ -277,34 +184,54 @@ int check_type(void)
 	case 5:
 	switch (c) {
 
-		default:
-			{ count(); return(CONSTANT); }			printf("\n");
-			state = 0;
+		case "U":
+			state=4;
+			cp++;
 			break;
-}
 
-	break;
+		case "u":
+			state=3;
+			cp++;
+			break;
 
-	case 6:
-	switch (c) {
+		case "Ã":
+			state=1;
+			cp++;
+			break;
 
 		case "â":
 			state=6;
 			cp++;
 			break;
 
-		case "U":
-			state=1;
-			cp++;
+		default:
+			printf("ERROR!");
+			state = 0;
+			throw 2;
 			break;
+}
+	break;
 
-		case "Ã":
-			state=3;
+	case 6:
+	switch (c) {
+
+		case "â":
+			state=2;
 			cp++;
 			break;
 
 		case "u":
-			state=2;
+			state=3;
+			cp++;
+			break;
+
+		case "Ã":
+			state=1;
+			cp++;
+			break;
+
+		case "U":
+			state=4;
 			cp++;
 			break;
 
@@ -320,22 +247,95 @@ int check_type(void)
 	switch (c) {
 
 		case "â":
-			state=4;
-			cp++;
-			break;
-
-		case "U":
-			state=1;
-			cp++;
-			break;
-
-		case "u":
 			state=2;
 			cp++;
 			break;
 
-		case "Ã":
+		case "u":
 			state=3;
+			cp++;
+			break;
+
+		case "U":
+			state=4;
+			cp++;
+			break;
+
+		case "Ã":
+			state=1;
+			cp++;
+			break;
+
+		default:
+			printf("ERROR!");
+			state = 0;
+			throw 2;
+			break;
+}
+	break;
+
+	case 1:
+	switch (c) {
+
+		case "Ã":
+			state=1;
+			cp++;
+			break;
+
+		case "â":
+			state=2;
+			cp++;
+			break;
+
+		case "U":
+			state=4;
+			cp++;
+			break;
+
+		case "u":
+			state=3;
+			cp++;
+			break;
+
+		default:
+			printf("ERROR!");
+			state = 0;
+			throw 2;
+			break;
+}
+	break;
+
+	case 2:
+	switch (c) {
+
+		default:
+			{ count(); return(CONSTANT); }			printf("\n");
+			state = 0;
+			break;
+}
+
+	break;
+
+	case 3:
+	switch (c) {
+
+		case "â":
+			state=2;
+			cp++;
+			break;
+
+		case "u":
+			state=3;
+			cp++;
+			break;
+
+		case "U":
+			state=4;
+			cp++;
+			break;
+
+		case "Ã":
+			state=1;
 			cp++;
 			break;
 
