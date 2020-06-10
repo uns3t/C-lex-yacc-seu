@@ -144,6 +144,8 @@ int check_type(void)
 
 	return IDENTIFIER;
 
+}
+
 
  	void dfa(char c){
         switch(state){
@@ -151,23 +153,23 @@ int check_type(void)
 	case 4:
 	switch (c) {
 
-		case "â":
-			state=6;
-			cp++;
-			break;
-
 		case "U":
-			state=2;
+			state=3;
 			cp++;
 			break;
 
-		case "Ã":
-			state=1;
+		case "â":
+			state=5;
 			cp++;
 			break;
 
 		case "u":
 			state=4;
+			cp++;
+			break;
+
+		case "Ã":
+			state=2;
 			cp++;
 			break;
 
@@ -194,22 +196,22 @@ int check_type(void)
 	switch (c) {
 
 		case "Ã":
+			state=2;
+			cp++;
+			break;
+
+		case "â":
 			state=1;
 			cp++;
 			break;
 
 		case "U":
-			state=2;
+			state=3;
 			cp++;
 			break;
 
 		case "u":
 			state=4;
-			cp++;
-			break;
-
-		case "â":
-			state=5;
 			cp++;
 			break;
 
@@ -225,22 +227,22 @@ int check_type(void)
 	switch (c) {
 
 		case "â":
+			state=1;
+			cp++;
+			break;
+
+		case "Ã":
+			state=2;
+			cp++;
+			break;
+
+		case "U":
 			state=3;
 			cp++;
 			break;
 
 		case "u":
 			state=4;
-			cp++;
-			break;
-
-		case "Ã":
-			state=1;
-			cp++;
-			break;
-
-		case "U":
-			state=2;
 			cp++;
 			break;
 
@@ -255,23 +257,23 @@ int check_type(void)
 	case 1:
 	switch (c) {
 
-		case "â":
-			state=3;
-			cp++;
-			break;
-
-		case "U":
-			state=2;
-			cp++;
-			break;
-
 		case "u":
 			state=4;
 			cp++;
 			break;
 
+		case "â":
+			state=5;
+			cp++;
+			break;
+
 		case "Ã":
-			state=1;
+			state=2;
+			cp++;
+			break;
+
+		case "U":
+			state=3;
 			cp++;
 			break;
 
@@ -286,13 +288,13 @@ int check_type(void)
 	case 2:
 	switch (c) {
 
-		case "Ã":
-			state=1;
+		case "â":
+			state=6;
 			cp++;
 			break;
 
-		case "â":
-			state=5;
+		case "U":
+			state=3;
 			cp++;
 			break;
 
@@ -301,7 +303,7 @@ int check_type(void)
 			cp++;
 			break;
 
-		case "U":
+		case "Ã":
 			state=2;
 			cp++;
 			break;
@@ -317,13 +319,13 @@ int check_type(void)
 	case 3:
 	switch (c) {
 
-		case "U":
-			state=2;
+		case "â":
+			state=5;
 			cp++;
 			break;
 
-		case "Ã":
-			state=1;
+		case "U":
+			state=3;
 			cp++;
 			break;
 
@@ -332,8 +334,8 @@ int check_type(void)
 			cp++;
 			break;
 
-		case "â":
-			state=5;
+		case "Ã":
+			state=2;
 			cp++;
 			break;
 
