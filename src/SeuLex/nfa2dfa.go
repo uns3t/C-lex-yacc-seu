@@ -7,11 +7,10 @@ import (
 )
 
 //求闭包
-func searchClosure(nState *NState, max int) map[int]*NState {
+func searchClosure(nState *NState) map[int]*NState {
 	//fmt.Println("求闭包" + strconv.Itoa(nState.StateId))
 	closure := make(map[int]*NState)
-	max++
-	flag := make([]bool, max)
+	flag := make([]bool, 16384)
 	back := []*NState{nState}
 	for len(back) > 0 {
 		temp := back[0]
@@ -52,7 +51,7 @@ func Nfa2Dfa(nStart *NState, id2NSate map[int]*NState) (*DState, map[int]*DState
 	//构建（没有确定化的，只是消除ε边的）NFA
 	id2NFAState := make(map[int]*NFAState)
 	for _, validNState := range validNStates {
-		closure := searchClosure(validNState, len(id2NSate))
+		closure := searchClosure(validNState)
 		nfaState := NewNFAState(validNState.StateId)
 		id2NFAState[validNState.StateId] = nfaState
 		nfaState.NStates = closure
@@ -72,7 +71,7 @@ func Nfa2Dfa(nStart *NState, id2NSate map[int]*NState) (*DState, map[int]*DState
 			}
 		}
 	}
-	//testNFA(id2NFAState)     nfa的结束状态没有丢失
+	//testNFA(id2NFAState)     //nfa的结束状态没有丢失
 	//2.Nfa确定化
 
 	counter := 0
@@ -124,14 +123,19 @@ func isDStateExisted(id2DState map[int]*DState, NFAStates map[int]*NFAState) (bo
 	return false, nil
 }
 
-//通过c到达的所有Nfa状态的集合,即DState	c StateId NfaState
+//通过c到达的所有Nfa状态的集合,即DState;	c StateId NfaState
 func getOuts(dState *DState) map[int]map[int]*NFAState {
 	outNfaStates := make(map[int]map[int]*NFAState)
 	for _, nfaState := range dState.NFAStates {
 		for _, nfaStateOut := range nfaState.Outs {
-			nfaStates := make(map[int]*NFAState)
-			nfaStates[nfaStateOut.NFAState.StateId] = nfaStateOut.NFAState
-			outNfaStates[nfaStateOut.C] = nfaStates
+			//nfaStates := make(map[int]*NFAState)
+			//nfaStates[nfaStateOut.NFAState.StateId] = nfaStateOut.NFAState
+			//outNfaStates[nfaStateOut.C] = nfaStates
+			if outNfaStates[nfaStateOut.C] == nil {
+				nfaStates := make(map[int]*NFAState)
+				outNfaStates[nfaStateOut.C] = nfaStates
+			}
+			outNfaStates[nfaStateOut.C][nfaStateOut.NFAState.StateId] = nfaStateOut.NFAState
 		}
 	}
 	return outNfaStates

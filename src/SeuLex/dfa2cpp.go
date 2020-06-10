@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func Dfa2Cpp(id2DState map[int]*DState, userDefineHead string, userDefineProgram string) {
+func Dfa2Cpp(id2DState map[int]*DState, id2DStateK map[int]*DState, userDefineHead string, userDefineProgram string) {
 
 	head := userDefineHead
 	head += `
@@ -20,6 +20,7 @@ func Dfa2Cpp(id2DState map[int]*DState, userDefineHead string, userDefineProgram
     
     int cp = 0;
     int state = 0;
+	int keyState=0;//关键字对应的state
     
     void dfa(char c);
 
@@ -38,9 +39,43 @@ func Dfa2Cpp(id2DState map[int]*DState, userDefineHead string, userDefineProgram
         }
         return 0;
     }
-
 	`
 	head += userDefineProgram
+
+	//关键字对应的第二层switch
+	//对于cp++如何处理    思考...
+	var coreOutputK = make([]string, 0)
+	var codeK string
+	for dStateId, dState := range id2DStateK {
+		codeK = "\tcase " + strconv.Itoa(dStateId) + ":\n\tswitch (c) {\n"
+		coreOutputK = append(coreOutputK, codeK)
+
+		for outC, outDState := range dState.Out {
+			codeK = "\t\tcase \"" + string(outC) + "\":\n" +
+				"\t\t\tkeyState=" + strconv.Itoa(outDState.StateId) + ";\n" +
+				"\t\t\tbreak;\n"
+			coreOutputK = append(coreOutputK, codeK)
+		}
+		if dState.IsEnd {
+			//EndFunc
+			codeK = "\t\tdefault:\n" +
+				"\t\t\t" + dState.EndFunc +
+				"\t\t\tprintf(\"\\n\");\n" +
+				"\t\t\tkeyState = 0;\n" +
+				"\t\t\tbreak;\n" +
+				"}\n"
+			coreOutputK = append(coreOutputK, codeK)
+		} else {
+			codeK = "\t\tdefault:\n" +
+				"\t\t\tprintf(\"Keywords ERROR! 不是关键字\");\n" +
+				"\t\t\tkeyState = 0;\n" +
+				"\t\t\tbreak;\n" +
+				"}"
+			coreOutputK = append(coreOutputK, codeK)
+		}
+		codeK = "\tbreak;\n"
+		coreOutputK = append(coreOutputK, codeK)
+	}
 
 	var coreOutput = make([]string, 0)
 	var code string
@@ -77,13 +112,20 @@ func Dfa2Cpp(id2DState map[int]*DState, userDefineHead string, userDefineProgram
 		coreOutput = append(coreOutput, code)
 	}
 
-	var dfaOutput = make([]string, 3)
+	var dfaOutput = make([]string, 5)
 	dfaOutput[0] = `
  	void dfa(char c){
-        switch(state){
-	`
+		switch(keyState){
+    `
 	dfaOutput[1] = strings.Join(coreOutput, "\n")
 	dfaOutput[2] = `
+			default:
+                break;
+        }
+		switch(state){
+	`
+	dfaOutput[3] = strings.Join(coreOutput, "\n")
+	dfaOutput[4] = `
 			default:
                 throw 1;
                 break;
