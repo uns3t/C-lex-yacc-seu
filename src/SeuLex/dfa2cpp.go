@@ -117,7 +117,7 @@ func Dfa2Cpp(id2DState map[int]*DState, id2DStateK map[int]*DState, userDefineHe
  	void dfa(char c){
 		switch(keyState){
     `
-	dfaOutput[1] = strings.Join(coreOutput, "\n")
+	dfaOutput[1] = strings.Join(coreOutputK, "\n")
 	dfaOutput[2] = `
 			default:
                 break;
