@@ -7,22 +7,32 @@ import (
 )
 
 //求闭包
-func searchClosure(nState *NState) map[int]*NState {
+func searchClosure(nState *NState, max int) map[int]*NState {
+	fmt.Println("求闭包" + strconv.Itoa(nState.StateId))
 	closure := make(map[int]*NState)
+	max++
+	flag := make([]bool, max)
 	back := []*NState{nState}
 	for len(back) > 0 {
 		temp := back[0]
 		back = back[1:]
 		closure[temp.StateId] = temp
-		if temp.C > 255 {
+		if temp.C > 256 {
 			if temp.Out1 != nil {
-				back = append(back, temp.Out1)
+				if !flag[temp.Out1.StateId] {
+					back = append(back, temp.Out1)
+					flag[temp.Out1.StateId] = true
+				}
 			}
 			if temp.Out2 != nil {
-				back = append(back, temp.Out2)
+				if !flag[temp.Out2.StateId] {
+					back = append(back, temp.Out2)
+					flag[temp.Out1.StateId] = true
+				}
 			}
 		}
 	}
+	fmt.Println("求闭包" + strconv.Itoa(nState.StateId) + "完成")
 	return closure
 }
 
@@ -42,7 +52,8 @@ func Nfa2Dfa(nStart *NState, id2NSate map[int]*NState) (*DState, map[int]*DState
 	//构建（没有确定化的，只是消除ε边的）NFA
 	id2NFAState := make(map[int]*NFAState)
 	for _, validNState := range validNStates {
-		closure := searchClosure(validNState)
+		fmt.Println("构建nfa" + strconv.Itoa(validNState.StateId))
+		closure := searchClosure(validNState, len(id2NSate))
 		nfaState := NewNFAState(validNState.StateId)
 		id2NFAState[validNState.StateId] = nfaState
 		nfaState.NStates = closure

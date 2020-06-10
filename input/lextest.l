@@ -15,7 +15,7 @@ void count(void);
 
 %%
 
-[1-9]{D}*{IS}?		{ count(); return(CONSTANT); }
+0[0-7]*{IS}?		{ count(); return(CONSTANT); }
 
 %%
 
