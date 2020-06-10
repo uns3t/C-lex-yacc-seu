@@ -8,7 +8,7 @@ import (
 
 //求闭包
 func searchClosure(nState *NState, max int) map[int]*NState {
-	fmt.Println("求闭包" + strconv.Itoa(nState.StateId))
+	//fmt.Println("求闭包" + strconv.Itoa(nState.StateId))
 	closure := make(map[int]*NState)
 	max++
 	flag := make([]bool, max)
@@ -32,7 +32,7 @@ func searchClosure(nState *NState, max int) map[int]*NState {
 			}
 		}
 	}
-	fmt.Println("求闭包" + strconv.Itoa(nState.StateId) + "完成")
+	//fmt.Println("求闭包" + strconv.Itoa(nState.StateId) + "完成")
 	return closure
 }
 
@@ -52,13 +52,12 @@ func Nfa2Dfa(nStart *NState, id2NSate map[int]*NState) (*DState, map[int]*DState
 	//构建（没有确定化的，只是消除ε边的）NFA
 	id2NFAState := make(map[int]*NFAState)
 	for _, validNState := range validNStates {
-		fmt.Println("构建nfa" + strconv.Itoa(validNState.StateId))
 		closure := searchClosure(validNState, len(id2NSate))
 		nfaState := NewNFAState(validNState.StateId)
 		id2NFAState[validNState.StateId] = nfaState
 		nfaState.NStates = closure
 		for _, closureNState := range closure {
-			if closureNState.C == 256 {
+			if closureNState.C == 256 && closureNState.EndFunc != "" {
 				nfaState.IsEnd = true
 				nfaState.EndFunc = closureNState.EndFunc
 			}
@@ -72,6 +71,14 @@ func Nfa2Dfa(nStart *NState, id2NSate map[int]*NState) (*DState, map[int]*DState
 			}
 		}
 	}
+
+	//for k,v:=range id2NFAState{
+	//	for _,v1:=range v.Outs{
+	//		if v1.C < 256 {
+	//			fmt.Println(strconv.Itoa(k)+"  -"+strconv.Itoa(v1.C)+"->  "+strconv.Itoa(v1.NFAState.StateId))
+	//		}
+	//	}
+	//}
 
 	//2.Nfa确定化
 
@@ -98,7 +105,7 @@ func Nfa2Dfa(nStart *NState, id2NSate map[int]*NState) (*DState, map[int]*DState
 				newDState := NewDState(counter)
 				newDState.NFAStates = cMap
 				for _, nfaState := range cMap {
-					if nfaState.IsEnd {
+					if nfaState.IsEnd && nfaState.EndFunc != "" {
 						newDState.IsEnd = true
 						newDState.EndFunc = nfaState.EndFunc
 					}

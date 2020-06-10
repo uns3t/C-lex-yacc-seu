@@ -16,8 +16,10 @@ func Lex(inputFileName string) {
 	var id2NStateI = make(map[int]*NState)
 	for exp, endFunc := range GetExpMap() {
 		fmt.Println(strconv.Itoa(counter) + "  处理的正规表达式: " + exp)
-		fmt.Println("规范化...")
+
+		fmt.Print("规范化...     ")
 		formalizedExp := Formalize(exp)
+		fmt.Println(formalizedExp)
 
 		if strings.HasPrefix(formalizedExp, "\"") && strings.HasSuffix(formalizedExp, "\"") && len(formalizedExp) > 2 {
 			//如果是关键字
@@ -42,10 +44,10 @@ func Lex(inputFileName string) {
 
 	fmt.Println("正则表达式数:" + strconv.Itoa(regNum))
 	fmt.Println("nfa状态数:" + strconv.Itoa(counter))
-	fmt.Println("起始nfa状态:" + strconv.Itoa(nStart.StateId))
+	fmt.Println("起始nfa状态:" + strconv.Itoa(nStart.StateId) + "\n----------------\n")
+	//PrintNfa(id2NState)
 
-	PrintNfa(id2NState)
 	_, id2DState := Nfa2Dfa(nStart, id2NState)
-	PrintDFA(id2DState)
+	//PrintDFA(id2DState)
 	Dfa2Cpp(id2DState, strings.Join(GetInclude(), "\n"), strings.Join(GetComment(), "\n"))
 }

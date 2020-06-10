@@ -93,8 +93,8 @@ func Post2Nfa(post []string, funcStr string, counter *int) (*NState, map[int]*NS
 	}
 
 	for p := 0; p < len(post); p++ {
-		fmt.Println("第" + strconv.Itoa(p) + "个字符" + post[p])
-		fmt.Println("此时FragStack栈里元素数:" + strconv.Itoa(FragStack.Len()))
+		//fmt.Println("第" + strconv.Itoa(p) + "个字符" + post[p])
+		//fmt.Println("此时FragStack栈里元素数:" + strconv.Itoa(FragStack.Len()))
 		switch post[p] {
 		//连接符, 对于两个Frag片段, 如果有连接符存在, 则进行连接操作; 对于正则表达式来说, 需要选择一个不会被用到的字符
 		case string(LINK):
