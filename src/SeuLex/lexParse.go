@@ -171,7 +171,7 @@ func ReplacePredefinedElements(exp string) string {
 	for k, v := range def_Map {
 		if strings.Index(replaced, k) != -1 {
 			temp := strings.Split(replaced,"")
-			if temp[strings.Index(replaced,k)-1] == "{" && temp[strings.Index(replaced,k)+len(k)] == "}" {
+			if strings.Index(replaced,k) != 0 && strings.Index(replaced,k) != len(replaced)-1 && temp[strings.Index(replaced,k)-1] == "{" && temp[strings.Index(replaced,k)+len(k)] == "}" {
 				replaced = strings.ReplaceAll(replaced, k, v)
 			}
 		}

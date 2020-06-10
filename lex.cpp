@@ -148,26 +148,68 @@ int check_type(void)
  	void dfa(char c){
         switch(state){
 	
-	case 5:
+	case 4:
 	switch (c) {
 
 		case "â":
+			state=6;
+			cp++;
+			break;
+
+		case "U":
+			state=2;
+			cp++;
+			break;
+
+		case "Ã":
 			state=1;
 			cp++;
 			break;
 
 		case "u":
-			state=2;
-			cp++;
-			break;
-
-		case "U":
 			state=4;
 			cp++;
 			break;
 
+		default:
+			printf("ERROR!");
+			state = 0;
+			throw 2;
+			break;
+}
+	break;
+
+	case 5:
+	switch (c) {
+
+		default:
+			{ count(); return(CONSTANT); }			printf("\n");
+			state = 0;
+			break;
+}
+
+	break;
+
+	case 6:
+	switch (c) {
+
 		case "Ã":
-			state=3;
+			state=1;
+			cp++;
+			break;
+
+		case "U":
+			state=2;
+			cp++;
+			break;
+
+		case "u":
+			state=4;
+			cp++;
+			break;
+
+		case "â":
+			state=5;
 			cp++;
 			break;
 
@@ -183,22 +225,22 @@ int check_type(void)
 	switch (c) {
 
 		case "â":
-			state=1;
-			cp++;
-			break;
-
-		case "u":
-			state=2;
-			cp++;
-			break;
-
-		case "Ã":
 			state=3;
 			cp++;
 			break;
 
-		case "U":
+		case "u":
 			state=4;
+			cp++;
+			break;
+
+		case "Ã":
+			state=1;
+			cp++;
+			break;
+
+		case "U":
+			state=2;
 			cp++;
 			break;
 
@@ -213,23 +255,23 @@ int check_type(void)
 	case 1:
 	switch (c) {
 
-		case "U":
-			state=4;
+		case "â":
+			state=3;
 			cp++;
 			break;
 
-		case "u":
+		case "U":
 			state=2;
 			cp++;
 			break;
 
-		case "â":
-			state=5;
+		case "u":
+			state=4;
 			cp++;
 			break;
 
 		case "Ã":
-			state=3;
+			state=1;
 			cp++;
 			break;
 
@@ -244,23 +286,23 @@ int check_type(void)
 	case 2:
 	switch (c) {
 
+		case "Ã":
+			state=1;
+			cp++;
+			break;
+
 		case "â":
 			state=5;
 			cp++;
 			break;
 
 		case "u":
-			state=2;
-			cp++;
-			break;
-
-		case "U":
 			state=4;
 			cp++;
 			break;
 
-		case "Ã":
-			state=3;
+		case "U":
+			state=2;
 			cp++;
 			break;
 
@@ -275,54 +317,23 @@ int check_type(void)
 	case 3:
 	switch (c) {
 
-		case "Ã":
-			state=3;
-			cp++;
-			break;
-
 		case "U":
-			state=4;
+			state=2;
 			cp++;
 			break;
 
-		case "â":
+		case "Ã":
 			state=1;
 			cp++;
 			break;
 
 		case "u":
-			state=2;
-			cp++;
-			break;
-
-		default:
-			printf("ERROR!");
-			state = 0;
-			throw 2;
-			break;
-}
-	break;
-
-	case 4:
-	switch (c) {
-
-		case "Ã":
-			state=3;
-			cp++;
-			break;
-
-		case "U":
 			state=4;
 			cp++;
 			break;
 
 		case "â":
 			state=5;
-			cp++;
-			break;
-
-		case "u":
-			state=2;
 			cp++;
 			break;
 
