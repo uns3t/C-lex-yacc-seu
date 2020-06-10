@@ -67,18 +67,11 @@ func Nfa2Dfa(nStart *NState, id2NSate map[int]*NState) (*DState, map[int]*DState
 	for _, nfaState := range id2NFAState {
 		for _, nState := range nfaState.NStates {
 			if nState.C < 256 {
+				//fmt.Println(strconv.Itoa(nfaState.StateId)+"  -"+strconv.Itoa(nState.C)+"->  "+strconv.Itoa(nState.Out1.StateId))
 				nfaState.Outs = append(nfaState.Outs, &Out{nState.C, id2NFAState[nState.Out1.StateId]})
 			}
 		}
 	}
-
-	//for k,v:=range id2NFAState{
-	//	for _,v1:=range v.Outs{
-	//		if v1.C < 256 {
-	//			fmt.Println(strconv.Itoa(k)+"  -"+strconv.Itoa(v1.C)+"->  "+strconv.Itoa(v1.NFAState.StateId))
-	//		}
-	//	}
-	//}
 
 	//2.Nfa确定化
 

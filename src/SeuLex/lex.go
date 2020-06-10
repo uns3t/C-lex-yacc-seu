@@ -16,7 +16,8 @@ func Lex(inputFileName string) {
 	var nStart, nStartI *NState
 	var id2NState = make(map[int]*NState)
 	var id2NStateI = make(map[int]*NState)
-	for exp, endFunc := range GetExpMap() {
+	expMap := GetExpMap()
+	for exp, endFunc := range expMap {
 		fmt.Println(strconv.Itoa(counter) + "  处理的正规表达式: " + exp)
 
 		fmt.Print("规范化...     ")
@@ -50,6 +51,32 @@ func Lex(inputFileName string) {
 	//PrintNfa(id2NState)
 
 	_, id2DState := Nfa2Dfa(nStart, id2NState)
+	testDFA(id2DState)
 	//PrintDFA(id2DState)
 	Dfa2Cpp(id2DState, strings.Join(GetInclude(), "\n"), strings.Join(GetComment(), "\n"))
+}
+
+func testDFA(id2DState map[int]*DState) {
+	endFuncNum := 0
+	dStateNum := 0
+	flag := make(map[string]bool)
+	for _, expEndFunc := range GetExpMap() {
+		flag[expEndFunc] = false
+	}
+	for _, dState := range id2DState {
+		if dState.IsEnd {
+			endFuncNum++
+			flag[dState.EndFunc] = true
+		}
+		dStateNum++
+	}
+	fmt.Println("统计信息")
+	fmt.Println("dfa状态数" + strconv.Itoa(dStateNum))
+	fmt.Println("endFunc数" + strconv.Itoa(endFuncNum))
+	for str, f := range flag {
+		if !f {
+			fmt.Println(str + " 丢失")
+		}
+		_ = str
+	}
 }

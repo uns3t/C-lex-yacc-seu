@@ -11,6 +11,7 @@ import (
 func main() {
 	//expTest("\"||\"")
 	//expTest("||")
+	//fmt.Println(runtime.GOOS)
 	test2()
 	//test1()
 }
@@ -79,7 +80,7 @@ func test1() {
 
 func test2() {
 	//SeuLex.Lex("./input/c99.l")
-	SeuLex.Lex("./input/lextest.l")
+	SeuLex.Lex("./input/c99.l")
 }
 
 func TestDfa2nfa() {

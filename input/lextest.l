@@ -15,7 +15,74 @@ void count(void);
 
 %%
 
-0[0-7]*{IS}?		{ count(); return(CONSTANT); }
+"/*"			{ comment(); }
+"//"[^\n]*			{ /* consume //-comment */ }
+
+
+"auto"			{ count(); return(AUTO); }
+"_Bool"			{ count(); return(BOOL); }
+"break"			{ count(); return(BREAK); }
+"case"			{ count(); return(CASE); }
+"char"			{ count(); return(CHAR); }
+"_Complex"		{ count(); return(COMPLEX); }
+"const"			{ count(); return(CONST); }
+"continue"		{ count(); return(CONTINUE); }
+"default"		{ count(); return(DEFAULT); }
+"do"			{ count(); return(DO); }
+"double"		{ count(); return(DOUBLE); }
+"else"			{ count(); return(ELSE); }
+"enum"			{ count(); return(ENUM); }
+"extern"		{ count(); return(EXTERN); }
+"float"			{ count(); return(FLOAT); }
+"for"			{ count(); return(FOR); }
+"goto"			{ count(); return(GOTO); }
+"if"			{ count(); return(IF); }
+"_Imaginary"		{ count(); return(IMAGINARY); }
+"inline"		{ count(); return(INLINE); }
+"int"			{ count(); return(INT); }
+"long"			{ count(); return(LONG); }
+"register"		{ count(); return(REGISTER); }
+"restrict"		{ count(); return(RESTRICT); }
+"return"		{ count(); return(RETURN); }
+"short"			{ count(); return(SHORT); }
+"signed"		{ count(); return(SIGNED); }
+"sizeof"		{ count(); return(SIZEOF); }
+"static"		{ count(); return(STATIC); }
+"struct"		{ count(); return(STRUCT); }
+"switch"		{ count(); return(SWITCH); }
+"typedef"		{ count(); return(TYPEDEF); }
+"union"			{ count(); return(UNION); }
+"unsigned"		{ count(); return(UNSIGNED); }
+"void"			{ count(); return(VOID); }
+"volatile"		{ count(); return(VOLATILE); }
+"while"			{ count(); return(WHILE); }
+
+
+","			{ count(); return(','); }
+":"			{ count(); return(':'); }
+"="			{ count(); return('='); }
+"("			{ count(); return('('); }
+")"			{ count(); return(')'); }
+("["|"<:")		{ count(); return('['); }
+("]"|":>")		{ count(); return(']'); }
+"."			{ count(); return('.'); }
+"&"			{ count(); return('&'); }
+"!"			{ count(); return('!'); }
+"~"			{ count(); return('~'); }
+"-"			{ count(); return('-'); }
+"+"			{ count(); return('+'); }
+"*"			{ count(); return('*'); }
+"/"			{ count(); return('/'); }
+"%"			{ count(); return('%'); }
+"<"			{ count(); return('<'); }
+">"			{ count(); return('>'); }
+"^"			{ count(); return('^'); }
+"|"			{ count(); return('|'); }
+"?"			{ count(); return('?'); }
+
+[ \t\v\n\f]		{ count(); }
+.			{ /* Add code to complain about unmatched characters */ }
+
 
 %%
 

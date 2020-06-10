@@ -80,7 +80,7 @@ func Postfix(exp []string) []string {
 //funcStr string 该NFA所对应的终止状态的处理函数, 该NFA所对应的结局
 func Post2Nfa(post []string, funcStr string, counter *int) (*NState, map[int]*NState) {
 	//连接符
-	LINK := 226 //正中的点
+	//LINK := 226 //正中的点
 	Split := 257
 	Match := 256
 
@@ -97,7 +97,7 @@ func Post2Nfa(post []string, funcStr string, counter *int) (*NState, map[int]*NS
 		//fmt.Println("此时FragStack栈里元素数:" + strconv.Itoa(FragStack.Len()))
 		switch post[p] {
 		//连接符, 对于两个Frag片段, 如果有连接符存在, 则进行连接操作; 对于正则表达式来说, 需要选择一个不会被用到的字符
-		case string(LINK):
+		case "•":
 			f2 = FragStack.Pop().(Fragment)
 			f1 = FragStack.Pop().(Fragment)
 
