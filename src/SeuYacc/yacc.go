@@ -1,8 +1,12 @@
 package SeuYacc
 
-import "fmt"
+import (
+	"fmt"
+	"res"
+)
 
 func Yacc(input string) {
+	res.SetOSType()
 	yaccFile := LoadYaccFile(input)
 	fmt.Println("yacc文件读取完成")
 	grammar := YaccToGrammar(yaccFile)

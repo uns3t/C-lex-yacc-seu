@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"res"
 	"strconv"
 	"strings"
 )
@@ -58,11 +59,11 @@ func scanner() {
 					state = 1
 				} else if strings.HasPrefix(text, "%%") {
 					state = 2
-				} else if text == "\n" { //WIN \r\n   MAC \n
+				} else if text == res.Enter { //WIN \r\n   MAC \n
 					break
 				} else {
 					arr := strings.Split(text, "\t")
-					exTemp := strings.Split(arr[len(arr)-1], "\n")[0] //WIN \r\n   MAC \n
+					exTemp := strings.Split(arr[len(arr)-1], res.Enter)[0] //WIN \r\n   MAC \n
 					if def_Map != nil {
 						def_Map[arr[0]] = exTemp
 					}
@@ -114,7 +115,7 @@ func scanner() {
 }
 
 func getRegularAndFunc(outPut string) {
-	exp := strings.Split(outPut, "\n") //WIN \r\n   MAC \n
+	exp := strings.Split(outPut, res.Enter) //WIN \r\n   MAC \n
 	for i := range exp {
 		temp := strings.Split(exp[i], "\t")
 		if strings.HasSuffix(temp[0], "\"") && strings.HasPrefix(temp[0], "\"") {
