@@ -49,7 +49,7 @@ func Lex(inputFileName string) {
 	fmt.Println("nfa状态数:" + strconv.Itoa(counter))
 	fmt.Println("起始nfa状态:" + strconv.Itoa(nStart.StateId) + "\n----------------\n")
 	//PrintNfa(id2NState)
-
+	//testNFA(id2NState)
 	_, id2DState := Nfa2Dfa(nStart, id2NState)
 	testDFA(id2DState)
 	//PrintDFA(id2DState)
@@ -73,6 +73,62 @@ func testDFA(id2DState map[int]*DState) {
 	fmt.Println("统计信息")
 	fmt.Println("dfa状态数" + strconv.Itoa(dStateNum))
 	fmt.Println("endFunc数" + strconv.Itoa(endFuncNum))
+	for str, f := range flag {
+		if !f {
+			fmt.Println(str + " 丢失")
+		}
+		_ = str
+	}
+}
+
+func testN(id2NState map[int]*NState) {
+	fmt.Println("===========testNFA==============")
+	flag := make(map[string]bool)
+	for _, expEndFunc := range GetExpMap() {
+		flag[expEndFunc] = false
+	}
+	for _, nState := range id2NState {
+		if nState.C == 256 && nState.EndFunc == "" {
+			fmt.Println("Match 但是没有EndFunc")
+		} else if nState.C == 256 && nState.EndFunc != "" {
+			fmt.Println("Match " + nState.EndFunc)
+			flag[nState.EndFunc] = true
+		} else if nState.C != 256 && nState.EndFunc != "" {
+			fmt.Println("有EndFunc 但不是Match")
+		} else {
+
+		}
+
+	}
+	fmt.Println("=========================")
+	for str, f := range flag {
+		if !f {
+			fmt.Println(str + " 丢失")
+		}
+		_ = str
+	}
+}
+
+func testNFA(id2NFAState map[int]*NFAState) {
+	fmt.Println("===========testNFA==============")
+	flag := make(map[string]bool)
+	for _, expEndFunc := range GetExpMap() {
+		flag[expEndFunc] = false
+	}
+	for _, nfaState := range id2NFAState {
+		if nfaState.IsEnd && nfaState.EndFunc == "" {
+			fmt.Println("isEnd 但是没有EndFunc")
+		} else if nfaState.IsEnd && nfaState.EndFunc != "" {
+			fmt.Println("isEnd " + nfaState.EndFunc)
+			flag[nfaState.EndFunc] = true
+		} else if !nfaState.IsEnd && nfaState.EndFunc != "" {
+			fmt.Println("有EndFunc 但不是end")
+		} else {
+
+		}
+
+	}
+	fmt.Println("=========================")
 	for str, f := range flag {
 		if !f {
 			fmt.Println(str + " 丢失")

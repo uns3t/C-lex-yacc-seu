@@ -72,7 +72,7 @@ func Nfa2Dfa(nStart *NState, id2NSate map[int]*NState) (*DState, map[int]*DState
 			}
 		}
 	}
-
+	//testNFA(id2NFAState)     nfa的结束状态没有丢失
 	//2.Nfa确定化
 
 	counter := 0
@@ -97,7 +97,7 @@ func Nfa2Dfa(nStart *NState, id2NSate map[int]*NState) (*DState, map[int]*DState
 			} else {
 				newDState := NewDState(counter)
 				newDState.NFAStates = cMap
-				for _, nfaState := range cMap {
+				for _, nfaState := range newDState.NFAStates {
 					if nfaState.IsEnd && nfaState.EndFunc != "" {
 						newDState.IsEnd = true
 						newDState.EndFunc = nfaState.EndFunc
