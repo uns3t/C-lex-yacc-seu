@@ -1,6 +1,7 @@
 package SeuYacc
 
 import (
+	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -66,6 +67,7 @@ func generateLR1DFA(I0 *lrState,grammar *Grammar) map[string]*lrState {
 			}
 		}
 		lrDFA[currentItem.name] = currentItem
+		fmt.Println(currentItem.name+"已构造完成\n")
 	}
 	return lrDFA
 }
