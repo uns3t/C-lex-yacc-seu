@@ -175,7 +175,7 @@ func transformRangeExpAdvanced(exp string) string {
 					}
 					charCode := int([]byte(rangeStart)[0])
 					charCodeEnd := int([]byte(rangeEnd)[0])
-					for ; charCode < charCodeEnd; charCode++ {
+					for ; charCode <= charCodeEnd; charCode++ {
 						char := string(charCode)
 						if len(escape_Map[char]) != 0 {
 							char = escape_Map[char]
