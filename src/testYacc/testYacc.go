@@ -2,16 +2,8 @@ package main
 
 import (
 	"SeuYacc"
-	"strings"
 )
 
 func main() {
-	yaccFile := SeuYacc.LoadYaccFile("./input/yacctest.y")
-	grammar := SeuYacc.YaccToGrammar(yaccFile)
-	dfaItem := SeuYacc.NewLrState("I0")
-	dfaItem.PutItems("0-0", strings.Split("$", ""), 0, strings.Split(grammar.GrammarStart(), ""))
-	//SeuYacc.generateLR1DFA(dfaItem,&grammar)
-	parsingTable := SeuYacc.DfaToParsingTable(dfaItem, &grammar)
-	SeuYacc.PrintParsingTable(parsingTable)
-	SeuYacc.ParsingTableToCpp(parsingTable, grammar)
+	SeuYacc.Yacc("./input/c99.y")
 }
