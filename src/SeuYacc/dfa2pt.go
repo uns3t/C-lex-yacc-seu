@@ -22,11 +22,11 @@ func getStateId(stateIdStr string) int {
 	return stateId
 }
 
-func DfaToParsingTable(I0 *lrState, grammar *Grammar) map[int]*ActionAndGoto {
+func DfaToParsingTable(I0 map[string]*lrState, grammar *Grammar) map[int]*ActionAndGoto {
 	//let parsingTable = {}
 	var parsingTable = make(map[int]*ActionAndGoto)
 	var stateId1, stateId2 int
-	for stateName, state := range generateLR1DFA(I0, grammar) {
+	for stateName, state := range I0 {
 		// 移进和GOTO
 		stateId1 = getStateId(stateName)
 		parsingTable[stateId1] = &ActionAndGoto{make(map[string]string), make(map[string]int)}

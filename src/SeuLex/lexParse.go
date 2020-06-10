@@ -54,14 +54,15 @@ func scanner() {
 		case 0:
 			{
 				if strings.HasPrefix(text, "%{") {
+					DefReplace()
 					state = 1
 				} else if strings.HasPrefix(text, "%%") {
 					state = 2
-				} else if text == "\r\n" { //WIN \r\n   MAC \n
+				} else if text == "\n" { //WIN \r\n   MAC \n
 					break
 				} else {
 					arr := strings.Split(text, "\t")
-					exTemp := strings.Split(arr[len(arr)-1], "\r\n")[0] //WIN \r\n   MAC \n
+					exTemp := strings.Split(arr[len(arr)-1], "\n")[0] //WIN \r\n   MAC \n
 					if def_Map != nil {
 						def_Map[arr[0]] = exTemp
 					}
@@ -113,7 +114,7 @@ func scanner() {
 }
 
 func getRegularAndFunc(outPut string) {
-	exp := strings.Split(outPut, "\r\n") //WIN \r\n   MAC \n
+	exp := strings.Split(outPut, "\n") //WIN \r\n   MAC \n
 	for i := range exp {
 		temp := strings.Split(exp[i], "\t")
 		if strings.HasSuffix(temp[0], "\"") && strings.HasPrefix(temp[0], "\"") {
@@ -162,13 +163,17 @@ func ReplacePredefinedElements(exp string) string {
 	//	flag = false
 	//	for k,v := range def_Map {
 	//		if strings.Index(replaced, k) != -1 {
-	//			replaced = strings.ReplaceAll(replaced, k, v)
+	//			flag = true
 	//		}
+	//		replaced = strings.ReplaceAll(replaced, k, v)
 	//	}
 	//}
 	for k, v := range def_Map {
 		if strings.Index(replaced, k) != -1 {
-			replaced = strings.ReplaceAll(replaced, k, v)
+			temp := strings.Split(replaced,"")
+			if temp[strings.Index(replaced,k)-1] == "{" && temp[strings.Index(replaced,k)+len(k)] == "}" {
+				replaced = strings.ReplaceAll(replaced, k, v)
+			}
 		}
 	}
 	replaced = strings.ReplaceAll(replaced, "{", "(")
@@ -186,4 +191,17 @@ func GetComment() []string {
 
 func GetExpMap() map[string]string {
 	return exp_Map
+}
+
+func DefReplace()  {
+	for k, v := range def_Map {
+		for m, n := range def_Map {
+			if strings.Contains(v,m) && k != m {
+				temp := strings.Split(v,"")
+				if temp[strings.Index(v,m)-1] == "{" && temp[strings.Index(v,m)+len(m)] == "}"{
+					def_Map[k] = strings.ReplaceAll(v,m,n)
+				}
+			}
+		}
+	}
 }

@@ -1,14 +1,17 @@
 package SeuYacc
 
-import "strings"
+import "fmt"
 
-func Yacc() {
-	yaccFile := LoadYaccFile("./input/yacctest.y")
+func Yacc(input string) {
+	yaccFile := LoadYaccFile(input)
+	fmt.Println("yacc文件读取完成")
 	grammar := YaccToGrammar(yaccFile)
-	dfaItem := NewLrState("I0")
-	dfaItem.PutItems("0-0", strings.Split("$", ""), 0, strings.Split(grammar.GrammarStart(), ""))
-	//GenerateLR1DFA(dfaItem,&grammar)
+	fmt.Println("grammar提取完成")
+	dfaItem := GenerateLR1(&grammar)
+	fmt.Println("dfa构造成功")
 	parsingTable := DfaToParsingTable(dfaItem, &grammar)
+	fmt.Println("dfa转parsingtable构造成功")
 	PrintParsingTable(parsingTable)
 	ParsingTableToCpp(parsingTable, grammar)
+	fmt.Println("parsingtable转cpp成功")
 }
