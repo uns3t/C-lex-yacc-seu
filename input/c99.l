@@ -67,11 +67,11 @@ void count(void);
 {D}*"."{D}+{E}?{FS}?	{ count(); return(CONSTANT); }
 {D}+"."{D}*{E}?{FS}?	{ count(); return(CONSTANT); }
 0[xX]{H}+{P}{FS}?	{ count(); return(CONSTANT); }
-0[xX]{H}*"."{H}+{P}?{FS}?     { count(); return(CONSTANT); }
-0[xX]{H}+"."{H}*{P}?{FS}?     { count(); return(CONSTANT); }
+0[xX]{H}*"."{H}+{P}?{FS}?			{ count(); return(CONSTANT); }
+0[xX]{H}+"."{H}*{P}?{FS}?			{ count(); return(CONSTANT); }
 
 
-{L}?\"(\\.|[^\\"\n])*\"	{ count(); return(STRING_LITERAL); }
+{L}?\"(\\.|[^\\"\n])*\"			{ count(); return(STRING_LITERAL); }
 
 "..."			{ count(); return(ELLIPSIS); }
 ">>="			{ count(); return(RIGHT_ASSIGN); }
