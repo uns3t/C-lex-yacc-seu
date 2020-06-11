@@ -2,15 +2,22 @@ package SeuYacc
 
 //记录了LR1状态转换图中的每一个状态
 type lrState struct {
-	name      string//I0
-	items     map[string]*item//key = 0-0
+	//I0
+	name      string
+	//LR1状态中项的集合  key为"X-Y" 其中X表示第几号产生式，Y表示点的位置如0-0
+	items     map[string]*item
+	//签名，用于去重
 	signature string
+	//出边的集合   key为输入的下一个符号  value为LR1状态的名称
 	edge      map[string]string
 }
-
+//LR1状态中的项
 type item struct {
+	//预测符集
 	predictor []string
+	//点的位置 从0开始
 	position  int
+	//产生式右部
 	rightPart []string
 }
 
