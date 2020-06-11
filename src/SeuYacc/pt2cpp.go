@@ -9,8 +9,9 @@ import (
 
 //parsing table to cpp
 
-func ParsingTableToCpp(parsingTable map[int]*ActionAndGoto, grammar Grammar) {
-	head := `
+func ParsingTableToCpp(parsingTable map[int]*ActionAndGoto, grammar Grammar, userDefineHead string, userDefineProgram string) {
+	head := userDefineHead
+	head += `
 	#include <iostream>
     #include <fstream>
     #include <vector>
@@ -74,7 +75,7 @@ func ParsingTableToCpp(parsingTable map[int]*ActionAndGoto, grammar Grammar) {
         symbolStack.push_back(vn);
     }
     `
-
+	head += userDefineProgram
 	var actionTableItem []string
 	var gotoTableItem []string
 	var code string

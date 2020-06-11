@@ -16,6 +16,6 @@ func Yacc(input string) {
 	parsingTable := DfaToParsingTable(dfaItem, &grammar)
 	fmt.Println("dfa转parsingtable构造成功")
 	PrintParsingTable(parsingTable)
-	ParsingTableToCpp(parsingTable, grammar)
+	ParsingTableToCpp(parsingTable, grammar, yaccFile.ProgramSegment[0], yaccFile.ProgramSegment[1])
 	fmt.Println("parsingtable转cpp成功")
 }
