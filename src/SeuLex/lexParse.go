@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"res"
 	"strconv"
 	"strings"
 )
@@ -42,25 +43,27 @@ func scanner() {
 	var errIn error
 	var reader = bufio.NewReader(LexFile)
 	for true {
+		//fmt.Println("读取到第" + strconv.Itoa(line) + "行")
 		line++
 		lineS = strconv.Itoa(line)
 		text, errIn = reader.ReadString('\n')
 		if errIn == io.EOF {
-			fmt.Println("读取文件完成")
+			fmt.Println("读取.lex文件完成")
 			break
 		}
 		switch state {
 		case 0:
 			{
 				if strings.HasPrefix(text, "%{") {
+					DefReplace()
 					state = 1
 				} else if strings.HasPrefix(text, "%%") {
 					state = 2
-				} else if text == "\n" {
+				} else if text == res.Enter { //WIN \r\n   MAC \n
 					break
 				} else {
 					arr := strings.Split(text, "\t")
-					exTemp := strings.Split(arr[len(arr)-1], "\n")[0]
+					exTemp := strings.Split(arr[len(arr)-1], res.Enter)[0] //WIN \r\n   MAC \n
 					if def_Map != nil {
 						def_Map[arr[0]] = exTemp
 					}
@@ -74,7 +77,7 @@ func scanner() {
 				} else {
 					if strings.HasPrefix(text, "#") {
 						includeStr = append(includeStr, text)
-					}else {
+					} else {
 						commentStr = append(commentStr, text)
 					}
 				}
@@ -112,11 +115,24 @@ func scanner() {
 }
 
 func getRegularAndFunc(outPut string) {
-	exp := strings.Split(outPut, "\n")
+	exp := strings.Split(outPut, res.Enter) //WIN \r\n   MAC \n
 	for i := range exp {
 		temp := strings.Split(exp[i], "\t")
-		replacedExp := ReplacePredefinedElements(temp[0])
-		exp_Map[replacedExp] = temp[len(temp)-1]
+		if strings.HasSuffix(temp[0], "\"") && strings.HasPrefix(temp[0], "\"") {
+			exp_Map[temp[0]] = temp[len(temp)-1]
+		} else if strings.HasPrefix(temp[0],"(\"") && strings.HasSuffix(temp[0],"\")") {
+			x := strings.Split(temp[0],"|")
+			exp_Map[x[0][1:]] = temp[len(temp)-1]
+			exp_Map[x[1][:len(x[1])-1]] = temp[len(temp)-1]
+		}else {
+			replacedExp := ReplacePredefinedElements(temp[0])
+			//if replacedExp!="\r" {
+			//	exp_Map[replacedExp] = temp[len(temp)-1]
+			//}
+			if replacedExp != "" {
+				exp_Map[replacedExp] = temp[len(temp)-1]
+			}
+		}
 	}
 }
 
@@ -143,16 +159,26 @@ func EscapeQuotation(exp string) {
 
 func ReplacePredefinedElements(exp string) string {
 	replaced := exp
-	flag := true
-	for flag {
-		flag = false
-		for k := range def_Map {
-			if strings.Index(replaced, k) != -1 {
-				flag = true
-				replaced = strings.ReplaceAll(replaced, k, def_Map[k])
+	//flag := true
+	//for flag {
+	//	flag = false
+	//	for k,v := range def_Map {
+	//		if strings.Index(replaced, k) != -1 {
+	//			flag = true
+	//		}
+	//		replaced = strings.ReplaceAll(replaced, k, v)
+	//	}
+	//}
+	for k, v := range def_Map {
+		if strings.Index(replaced, k) != -1 {
+			temp := strings.Split(replaced,"")
+			if strings.Index(replaced,k) != 0 && strings.Index(replaced,k) != len(replaced)-1 && temp[strings.Index(replaced,k)-1] == "{" && temp[strings.Index(replaced,k)+len(k)] == "}" {
+				replaced = strings.ReplaceAll(replaced, k, v)
 			}
 		}
 	}
+	replaced = strings.ReplaceAll(replaced, "{", "(")
+	replaced = strings.ReplaceAll(replaced, "}", ")")
 	return replaced
 }
 
@@ -166,4 +192,17 @@ func GetComment() []string {
 
 func GetExpMap() map[string]string {
 	return exp_Map
+}
+
+func DefReplace()  {
+	for k, v := range def_Map {
+		for m, n := range def_Map {
+			if strings.Contains(v,m) && k != m {
+				temp := strings.Split(v,"")
+				if temp[strings.Index(v,m)-1] == "{" && temp[strings.Index(v,m)+len(m)] == "}"{
+					def_Map[k] = strings.ReplaceAll(v,m,n)
+				}
+			}
+		}
+	}
 }

@@ -2,6 +2,7 @@ package SeuYacc
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -22,11 +23,11 @@ func getStateId(stateIdStr string) int {
 	return stateId
 }
 
-func DfaToParsingTable(I0 *lrState, grammar *Grammar) map[int]*ActionAndGoto {
+func DfaToParsingTable(lrStates map[string]*lrState, grammar *Grammar) map[int]*ActionAndGoto {
 	//let parsingTable = {}
 	var parsingTable = make(map[int]*ActionAndGoto)
 	var stateId1, stateId2 int
-	for stateName, state := range generateLR1DFA(I0, grammar) {
+	for stateName, state := range lrStates {
 		// 移进和GOTO
 		stateId1 = getStateId(stateName)
 		parsingTable[stateId1] = &ActionAndGoto{make(map[string]string), make(map[string]int)}
@@ -47,23 +48,46 @@ func DfaToParsingTable(I0 *lrState, grammar *Grammar) map[int]*ActionAndGoto {
 				// 点移动到末尾的情况需要处理
 				for _, predictor := range item.predictor {
 					if _, ok := parsingTable[stateId1].actionTable[predictor]; !ok {
-						//if(!parsingTable[tableState].action[predictor])是指非空还是啥?
 						parsingTable[stateId1].actionTable[predictor] = ""
 					}
 					//有点问题
-					parsingTable[stateId1].actionTable[predictor] = "r" + strings.Split(itemName, "-")[0]
+					parsingTable[stateId1].actionTable[predictor] += "r" + strings.Split(itemName, "-")[0]
 				}
 			}
 
 		}
 
+		//for vt, content := range parsingTable[stateId1].actionTable {
+		//	if len(parsingTable[stateId1].actionTable[vt]) > 2 {
+		//		parsingTable[stateId1].actionTable[vt] = "r" + strings.Split(content, "r")[0]
+		//	}
+		//}
+
 		for vt, content := range parsingTable[stateId1].actionTable {
-			if len(parsingTable[stateId1].actionTable[vt]) > 2 {
-				parsingTable[stateId1].actionTable[vt] = "r" + strings.Split(content, "r")[0]
+			temp1 := make([]string, 0)
+			if len(parsingTable[stateId1].actionTable[vt]) > 1 {
+				temp := strings.FieldsFunc(content, split)
+				//temp中元素可能以r/S开头;我们只需要r
+				sort.Strings(temp)
+				for _, v := range temp {
+					if strings.HasPrefix(v, "r") {
+						temp1 = append(temp1, v)
+					}
+				}
+			}
+			if len(temp1) > 0 {
+				parsingTable[stateId1].actionTable[vt] = temp1[0]
 			}
 		}
 	}
 	return parsingTable
+}
+
+func split(s rune) bool {
+	if s == 'r' || s == 'S' {
+		return true
+	}
+	return false
 }
 
 func PrintParsingTable(pt map[int]*ActionAndGoto) {

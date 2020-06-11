@@ -8,60 +8,60 @@ import (
 )
 
 var escape_Map = map[string]string{
-	"+" : "\\+",
-	"*" : "\\*",
-	"•" : "\\•",
-	"(" : "\\(",
-	")" : "\\)",
-	"[" : "\\[",
-	"]" : "\\]",
-	"-" : "\\-",
-	"^" : "\\^",
-	"?" : "\\?",
-	"|" : "\\|",
-	"." : "\\.",
-	"\\" : "\\\\"}
+	"+":  "\\+",
+	"*":  "\\*",
+	"•":  "\\•",
+	"(":  "\\(",
+	")":  "\\)",
+	"[":  "\\[",
+	"]":  "\\]",
+	"-":  "\\-",
+	"^":  "\\^",
+	"?":  "\\?",
+	"|":  "\\|",
+	".":  "\\.",
+	"\\": "\\\\"}
 
 var escape_Map_Reverse = map[string]string{
-	"\\+" : "+",
-	"\\*" : "*",
-	"\\•" : "•",
-	"\\(" : "(",
-	"\\)" : ")",
-	"\\[" : "[",
-	"\\]" : "]",
-	"\\-" : "-",
-	"\\^" : "^",
-	"\\?" : "?",
-	"\\|" : "|",
-	"\\." : ".",
-	"\\\\" : "\\"}
+	"\\+":  "+",
+	"\\*":  "*",
+	"\\•":  "•",
+	"\\(":  "(",
+	"\\)":  ")",
+	"\\[":  "[",
+	"\\]":  "]",
+	"\\-":  "-",
+	"\\^":  "^",
+	"\\?":  "?",
+	"\\|":  "|",
+	"\\.":  ".",
+	"\\\\": "\\"}
 
-func unicodeTrans(code []string) string{
-	bs, _ := hex.DecodeString(strings.Join(code,""))
+func unicodeTrans(code []string) string {
+	bs, _ := hex.DecodeString(strings.Join(code, ""))
 	r := 0
-	binary.Read(bytes.NewReader(bs),binary.BigEndian,&r)
+	binary.Read(bytes.NewReader(bs), binary.BigEndian, &r)
 	return string(r)
 }
 
 func processUnicodeEscape(exp string) string {
-	input := strings.Split(exp,"")
+	input := strings.Split(exp, "")
 	start := 0
 	escapMap := map[string]string{
-		"t" : "\t",
-		"n" : "\n",
-		"b" : "\b",
+		"t": "\t",
+		"n": "\n",
+		"b": "\b",
 		"f": "\f",
-		"v" : "\v",
-		"r" : "\r",
-		"s" : " "}
+		"v": "\v",
+		"r": "\r",
+		"s": " "}
 	for start < len(input) {
 		if input[start] == "\\" {
-			if len(escapMap[input[start+1]]) != 0{
+			if len(escapMap[input[start+1]]) != 0 {
 				input[start] = ""
 				input[start+1] = escapMap[input[start+1]]
-			}else if input[start+1] == "u" {
-				input[start] = unicodeTrans(input[start+2:start+6])
+			} else if input[start+1] == "u" {
+				input[start] = unicodeTrans(input[start+2 : start+6])
 				for i := 1; i < 6; i++ {
 					input[start+i] = ""
 				}
@@ -69,19 +69,19 @@ func processUnicodeEscape(exp string) string {
 		}
 		start++
 	}
-	return strings.Join(input,"")
+	return strings.Join(input, "")
 }
 
 func processRegexEscape(exp string) []string {
-	input := strings.Split(exp,"")
+	input := strings.Split(exp, "")
 	start := 0
 	for start < len(input) {
 		if input[start] == "\\" {
 			if len(escape_Map[input[start+1]]) != 0 {
 				input[start] = escape_Map[input[start+1]]
-				head := input[0:start+1]
+				head := input[0 : start+1]
 				tail := input[start+2:]
-				input = append(head,tail...)
+				input = append(head, tail...)
 			}
 		}
 		start++
@@ -92,7 +92,7 @@ func processRegexEscape(exp string) []string {
 
 /*
 	解析.(a|b|c|...)
- */
+*/
 func transformAllExp(exp string) string {
 	input := processRegexEscape(exp)
 	start := 0
@@ -104,7 +104,7 @@ func transformAllExp(exp string) string {
 		}
 		charSet = append(charSet, c)
 	}
-	allChar := strings.Join(charSet,"|")
+	allChar := strings.Join(charSet, "|")
 	allChar = "(" + allChar + ")"
 	for start < len(input) {
 		if input[start] == "." {
@@ -112,12 +112,12 @@ func transformAllExp(exp string) string {
 		}
 		start++
 	}
-	return strings.Join(input,"")
+	return strings.Join(input, "")
 }
 
 /*
 	解析[^] (a|b|c...)
- */
+*/
 func transformNegRangeExp(exp string) string {
 	input := processRegexEscape(exp)
 	start := 0
@@ -147,12 +147,12 @@ func transformNegRangeExp(exp string) string {
 		}
 		start++
 	}
-	return strings.Join(input,"")
+	return strings.Join(input, "")
 }
 
 /*
 	解析[?-?] [a-z] (a|b
- */
+*/
 func transformRangeExpAdvanced(exp string) string {
 	input := processRegexEscape(exp)
 	start := 0
@@ -175,30 +175,30 @@ func transformRangeExpAdvanced(exp string) string {
 					}
 					charCode := int([]byte(rangeStart)[0])
 					charCodeEnd := int([]byte(rangeEnd)[0])
-					for ; charCode < charCodeEnd; charCode++ {
+					for ; charCode <= charCodeEnd; charCode++ {
 						char := string(charCode)
 						if len(escape_Map[char]) != 0 {
 							char = escape_Map[char]
 						}
-						rangeContent = append(rangeContent,char)
+						rangeContent = append(rangeContent, char)
 					}
-				}else if i != start && i != end && input[i-1] != "-" && input[i+1] != "-" {
-					rangeContent = append(rangeContent,input[i])
+				} else if i != start && i != end && input[i-1] != "-" && input[i+1] != "-" {
+					rangeContent = append(rangeContent, input[i])
 				}
 			}
-			rangeContentStr := "(" + strings.Join(rangeContent,"|") +")"
+			rangeContentStr := "(" + strings.Join(rangeContent, "|") + ")"
 			head := input[0:start]
 			tail := input[end+1:]
 			input = append(append(head, rangeContentStr), tail...)
 		}
 		start++
 	}
-	return strings.Join(input,"")
+	return strings.Join(input, "")
 }
 
 /*
 	解析()+
- */
+*/
 func transformOneOrMore(exp string) string {
 	input := processRegexEscape(exp)
 	pointer := 0
@@ -219,15 +219,15 @@ func transformOneOrMore(exp string) string {
 			}
 			head := input[0:start]
 			tail := input[end+2:]
-			content := strings.Join(input[start+1:end],"")
-			content = "(" + content+ ")•(" + content + ")?"
+			content := strings.Join(input[start+1:end], "")
+			content = "(" + content + ")•(" + content + ")?"
 			input = append(append(head, content), tail...)
 			pointer++
-		}else {
+		} else {
 			pointer++
 		}
 	}
-	return strings.Join(input,"")
+	return strings.Join(input, "")
 }
 
 /*
@@ -253,77 +253,96 @@ func transformZeroOrMore(exp string) string {
 			}
 			head := input[0:start]
 			tail := input[end+2:]
-			content := strings.Join(input[start+1:end],"")
-			content = "(((" + content+ ")*)|ø)"
+			content := strings.Join(input[start+1:end], "")
+			content = "(((" + content + ")*)|ø)"
 			input = append(append(head, content), tail...)
 			pointer++
-		}else {
+		} else {
 			pointer++
 		}
 	}
-	return strings.Join(input,"")
+	return strings.Join(input, "")
 }
 
 /*
 	转义字符恢复
- */
+*/
 func escapeReverse(exp string) string {
-	escapeMapReverse := map[string]string {
-		"\\+" : "+",
-		"\\[" : "[",
-		"\\]" : "]",
-		"\\-" : "-",
-		"\\^" : "^",
-		"\\?" : "?",
-		"\\." : "."}
+	escapeMapReverse := map[string]string{
+		"\\+": "+",
+		"\\[": "[",
+		"\\]": "]",
+		"\\-": "-",
+		"\\^": "^",
+		"\\?": "?",
+		"\\.": "."}
 	input := processRegexEscape(exp)
 	for i := range input {
 		if len(escapeMapReverse[input[i]]) != 0 {
 			input[i] = escapeMapReverse[input[i]]
 		}
 	}
-	return strings.Join(input,"")
+	return strings.Join(input, "")
 }
 
 /*
 	添加连接符号
- */
-func addConnectPoint(exp string) string{
+*/
+func addConnectPoint(exp string) string {
 	input := processRegexEscape(exp)
 	start := 0
 	keyChar := "()|*•"
 	for start < len(input)-1 {
-		if !strings.Contains(keyChar,input[start]) && !strings.Contains(keyChar,input[start+1]) && len(input[start+1]) != 0 {
-			head := input[0:start+1]
-			tail := input[start+1:]
-			input = append(append(head, "•"), tail...)
+		if !strings.Contains(keyChar, input[start]) && !strings.Contains(keyChar, input[start+1]) && len(input[start+1]) != 0 {
+			var head, tail []string
+			head = make([]string, len(input[0:start+1]))
+			tail = make([]string, len(input[start+1:]))
+			copy(head, input[0:start+1])
+			copy(tail, input[start+1:])
+			head = append(head, "•")
+			input = append(head, tail...)
 			start += 2
 			continue
-		} else if !strings.Contains(keyChar,input[start]) && input[start+1] == "(" && len(input[start+1]) != 0 {
-			head := input[0:start+1]
-			tail := input[start+1:]
-			input = append(append(head, "•"), tail...)
+		} else if !strings.Contains(keyChar, input[start]) && input[start+1] == "(" && len(input[start+1]) != 0 {
+			var head, tail []string
+			head = make([]string, len(input[0:start+1]))
+			tail = make([]string, len(input[start+1:]))
+			copy(head, input[0:start+1])
+			copy(tail, input[start+1:])
+			head = append(head, "•")
+			input = append(head, tail...)
 			start += 2
 			continue
-		} else if input[start] == ")" && !strings.Contains(keyChar,input[start+1]) && len(input[start+1]) != 0 {
-			head := input[0:start+1]
-			tail := input[start+1:]
-			input = append(append(head, "•"), tail...)
+		} else if input[start] == ")" && !strings.Contains(keyChar, input[start+1]) && len(input[start+1]) != 0 {
+			var head, tail []string
+			head = make([]string, len(input[0:start+1]))
+			tail = make([]string, len(input[start+1:]))
+			copy(head, input[0:start+1])
+			copy(tail, input[start+1:])
+			head = append(head, "•")
+			input = append(head, tail...)
 			start += 2
 			continue
 		} else if input[start] == ")" && input[start+1] == "(" && len(input[start+1]) != 0 {
-			head := input[0:start+1]
-			tail := input[start+1:]
-			input = append(append(head, "•"), tail...)
+			var head, tail []string
+			head = make([]string, len(input[0:start+1]))
+			tail = make([]string, len(input[start+1:]))
+			copy(head, input[0:start+1])
+			copy(tail, input[start+1:])
+			head = append(head, "•")
+			input = append(head, tail...)
 			start += 2
 			continue
 		}
 		start += 1
 	}
-	return strings.Join(input,"")
+	return strings.Join(input, "")
 }
 
 func Formalize(exp string) string {
+	if strings.HasPrefix(exp, "\"") && strings.HasSuffix(exp, "\"") {
+		return exp
+	}
 	return addConnectPoint(
 		escapeReverse(
 			transformZeroOrMore(
@@ -332,4 +351,10 @@ func Formalize(exp string) string {
 						transformNegRangeExp(
 							transformAllExp(
 								processUnicodeEscape(exp))))))))
+}
+
+func Test() {
+	println(addConnectPoint(escapeReverse(transformZeroOrMore(
+		transformOneOrMore(
+			transformRangeExpAdvanced("0[xX]([a-fA-F0-9])+(((u|U)|(u|U)?(l|[a-zA-Z_]|ll|[a-zA-Z_][a-zA-Z_])|(l|[a-zA-Z_]|ll|[a-zA-Z_][a-zA-Z_])(u|U)))?"))))))
 }
