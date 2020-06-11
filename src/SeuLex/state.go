@@ -5,13 +5,9 @@ type NState struct {
 	/*选择2^8是因为string[i]类型为uint8
 	256 match
 	257 spilt
-	<256 字符对应的ascii值
+	<256 转移字符对应的int值
 	*/
 	C int
-
-	//isStart    bool
-	//IsEnd      bool
-	//transition map[string]*NState
 	//实边
 	Out1    *NState
 	Out2    *NState
@@ -32,6 +28,7 @@ type NFAState struct {
 	Outs    []*Out
 	EndFunc string //只有该点为Match时, 值可以视为有效
 }
+
 type Out struct {
 	C        int
 	NFAState *NFAState

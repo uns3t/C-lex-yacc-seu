@@ -48,8 +48,8 @@ func test1() {
 	fmt.Println("没有规范化的正则表达式:\n" + regularExpression)
 
 	//读入lex源文件
-	SeuLex.ScanStart("./input/lextest.l")
-	SeuLex.ReplacePredefinedElements("(L)?\"(((\\\\.)|[^\\\\\"\\n])*)\"")
+	//SeuLex.ScanStart("./input/lextest.l")
+	//SeuLex.ReplacePredefinedElements("(L)?\"(((\\\\.)|[^\\\\\"\\n])*)\"")
 	//对源文件进行分割
 	str := SeuLex.Formalize(regularExpression)
 	fmt.Println("规范化后的正则表达式:\n" + str)
