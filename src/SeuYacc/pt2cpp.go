@@ -94,8 +94,8 @@ func ParsingTableToCpp(parsingTable map[int]*ActionAndGoto, grammar Grammar) {
 				leftPart := getLeftPart(grammar, job1)
 				rightPart := getRightPart(grammar, job1)
 				code = "if ( a == \"" + vt + "\")\n {\n  r(" + strconv.Itoa(len(rightPart)) + ",\"" + leftPart + "\");" +
-					"" + " return 0;\n }"
-				code += "std::cout << \"归约：\" << \"" + leftPart + "\" => \" << \"" + strings.Join(rightPart, " ") + "\" << std::endl;\n"
+					"" + " return 0;\n }\n "
+				code += "std::cout << \"归约：\" << \"" + leftPart + " => \" << \"" + strings.Join(rightPart, " ") + "\" << std::endl;\n"
 				actions = append(actions, code)
 			}
 		}
