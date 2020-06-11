@@ -51,7 +51,7 @@ func Dfa2Cpp(id2DState map[int]*DState, id2DStateK map[int]*DState, userDefineHe
 		coreOutputK = append(coreOutputK, codeK)
 
 		for outC, outDState := range dState.Out {
-			codeK = "\t\tcase \"" + string(outC) + "\":\n" +
+			codeK = "\t\tcase '" + string(outC) + "':\n" +
 				"\t\t\tkeyState=" + strconv.Itoa(outDState.StateId) + ";\n" +
 				"\t\t\tbreak;\n"
 			coreOutputK = append(coreOutputK, codeK)
@@ -84,7 +84,7 @@ func Dfa2Cpp(id2DState map[int]*DState, id2DStateK map[int]*DState, userDefineHe
 		coreOutput = append(coreOutput, code)
 
 		for outC, outDState := range dState.Out {
-			code = "\t\tcase \"" + string(outC) + "\":\n" +
+			code = "\t\tcase '" + string(outC) + "':\n" +
 				"\t\t\tstate=" + strconv.Itoa(outDState.StateId) + ";\n" +
 				"\t\t\tcp++;\n" +
 				"\t\t\tbreak;\n"
