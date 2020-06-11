@@ -74,7 +74,7 @@ func DfaToParsingTable(lrStates map[string]*lrState, grammar *Grammar) map[int]*
 				}
 			}
 			if len(temp1) > 0 {
-				parsingTable[stateId1].actionTable[vt] = temp1[0]
+				parsingTable[stateId1].actionTable[vt] = "r" + temp1[0]
 			}
 		}
 	}
