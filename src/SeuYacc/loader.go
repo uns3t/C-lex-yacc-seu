@@ -10,7 +10,7 @@ import (
 type YaccFile struct {
 	DefineSegment  defineSegment
 	GrammarSegment []grammarSegment
-	ProgramSegment string
+	ProgramSegment []string
 }
 type defineSegment struct {
 	Token []string
@@ -33,7 +33,10 @@ func LoadYaccFile(yaccPath string) YaccFile {
 
 	temp1 := parseDefineSegment(yaccSegment[0])
 	temp2 := parseGrammarSegment(yaccSegment[1])
-	ret := YaccFile{temp1, temp2, yaccSegment[2]}
+	programSeg:=strings.Split(yaccSegment[2],">")
+	programHead:=programSeg[0]+">"
+	temp3:=[]string{programHead,programSeg[1]}
+	ret := YaccFile{temp1, temp2, temp3}
 
 	return ret
 }
