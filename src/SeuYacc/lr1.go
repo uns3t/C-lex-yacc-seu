@@ -48,6 +48,15 @@ func nextStep(dfaItem *lrState, edge string) *lrState {
 func GenerateLR1(grammar *Grammar) map[string]*lrState {
 	dfaItem := NewLrState("I0")
 	dfaItem.PutItems("0-0", strings.Split("$", ""), 0, strings.Split(grammar.GrammarStart(), ""))
+	var sig []string
+	for k,v := range dfaItem.items {
+		str := k + "-" + strings.Join(v.predictor,"|")
+		sig = append(sig, str)
+	}
+	sort.Strings(sig)
+	t := sha1.New()
+	t.Write([]byte(strings.Join(sig,"•")))
+	dfaItem.signature = string(t.Sum(nil))
 	return generateLR1DFA(dfaItem,grammar)
 }
 
