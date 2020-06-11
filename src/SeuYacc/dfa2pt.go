@@ -64,22 +64,13 @@ func DfaToParsingTable(lrStates map[string]*lrState, grammar *Grammar) map[int]*
 
 		for vt, content := range parsingTable[stateId1].actionTable {
 			temp1 := make([]string, 0)
-			if len(parsingTable[stateId1].actionTable[vt]) > 1 {
-				//temp := strings.FieldsFunc(content, split)
-				////temp中元素可能以r/S开头;我们只需要r
-				//sort.Strings(temp)
-				//for _, v := range temp {
-				//	if strings.HasPrefix(v, "r") {
-				//		temp1 = append(temp1, v)
-				//	}
-				//}
-				temp := strings.SplitAfter(content, "r")
-				for _, v := range temp {
-					for _, v1 := range strings.SplitAfter(v, "S") {
-						if strings.HasPrefix(v1, "r") {
-							temp1 = append(temp1, v1)
-						}
-					}
+			temp := strings.Split(content, "r")
+			for _, v := range temp {
+				if i := strings.Index(v, "S"); i >= 0 {
+					v = v[:i]
+				}
+				if v != "" {
+					temp1 = append(temp1, v)
 				}
 			}
 			if len(temp1) > 0 {
